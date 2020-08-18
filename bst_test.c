@@ -1,6 +1,7 @@
 #include "bst.h"
 #include <stdbool.h>
 #include <assert.h>
+#include <stdlib.h>
 
 void add_node_tests()
 {
@@ -438,6 +439,45 @@ void remove_tests()
         }
     }
     free(test_rem_2_bst);
+}
+
+void max_depth_tests()
+{
+    /* test 1 */
+    /* tree is: 
+     *                 1
+	 *  		          3
+	 *  		             4
+	 *  				        69
+	 *  			         10     
+     *
+     *  depth of 5
+     */
+    int test_max_depth[5] = { 1, 3, 4, 69, 10 };
+    int test_max_depth_size = 5;
+    struct BST* test_max_depth_bst = bst_new(test_max_depth,
+        test_max_depth_size);
+    assert(bst_max_depth(test_max_depth_bst) == 5);
+    free(test_max_depth_bst);
+
+    /* test 2 */
+    /* tree is:
+                3
+                 \
+                  9
+                /  \
+               7   20
+                  /
+                15
+
+    *  depth of 4
+     */
+    int test_max_depth_2[5] = { 3, 9, 20, 15, 7 };
+    int test_max_depth_2_size = 5;
+    struct BST* test_max_depth_2_bst = bst_new(test_max_depth_2,
+        test_max_depth_2_size);
+    assert(bst_max_depth(test_max_depth_2_bst) == 4);
+    free(test_max_depth_2_bst);
 }
 
 int main(void)

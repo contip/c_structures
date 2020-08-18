@@ -384,6 +384,75 @@ int bst_root_val(struct BST* bst)
 }
 
 
+/*
+ * Function:  max_depth_recur
+ * --------------------
+ *  finds max distance from given node to farthest leaf node
+ *  recursive helper function for bst_max_depth
+ *  
+ *  node: (struct Node*) ptr to node
+ *
+ *  returns: the max depth (integer)
+ */
+int max_depth_recur(struct Node* node)
+{
+    if (node == NULL)
+    {
+        return 0;
+    }
+    /* get depths of left and right subtrees */
+    int left = max_depth_recur(node->left);
+    int right = max_depth_recur(node->right);
+    /* compare left and right subtree depths, return greater */
+    if (left > right)
+    {
+        return left + 1;
+    }
+    else
+    {
+        return right + 1;
+    }
+}
+
+
+/*
+ * Function:  bst_max_depth
+ * --------------------
+ *  returns number of nodes along longest path from root to farthest leaf node
+ *  
+ *  bst: (struct BST*) ptr to BST
+ *
+ *  returns: the BST's max depth (integer)
+ */
+int bst_max_depth(struct BST* bst)
+{
+    struct Node* root_ptr = bst->root;
+    return max_depth_recur(root_ptr);
+}
+
+
+/*
+ * Function:  bst_node_level
+ * --------------------
+ *  returns level of given node in bst (root is considered level 1)
+ *  
+ *  bst: (struct BST*) ptr to BST
+ *  node: (struct Node*) ptr to Node
+ *
+ *  returns: the node's level in the bst (integer), or NULL
+ */
+int bst_node_level(struct BST* bst, struct Node* node)
+{
+    int level = 1;
+    while (node->parent != NULL)
+    {
+        node = node->parent;
+        level++;
+    }
+    return level;
+}
+
+
 //int main(void)
 //{
 //    //struct BST* my_jawn = create_bst();
@@ -424,8 +493,23 @@ int bst_root_val(struct BST* bst)
 //    {
 //        printf("%d ", traversal[i]);
 //    }
+//    printf("\n");
 //
+//    /* test depth */
+//    /* tree is: 
+//     *                 1
+//	 *  		          3
+//	 *  		             4
+//	 *  				        69
+//	 *  			         10     
+//     *
+//     *  depth of 5
+//     */
+//    int my_jawn_max_depth = bst_max_depth(my_jawn);
+//    printf("the max depth of the jawn i made is: %d\n", my_jawn_max_depth);
 //
+//    int depth_test[] = { 3, 9, 20, 15, 7 };
+//    
 //
 //    return 0;
 //}
