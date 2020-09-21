@@ -24,6 +24,7 @@ struct Node* bst_find(struct BST* bst, int key);
 bool bst_remove(struct BST* bst, int key);
 int bst_root_val(struct BST* bst);
 int bst_max_depth(struct BST* bst);
+int bst_min_depth(struct BST* bst);
 
 #endif
 

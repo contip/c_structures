@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 void add_node_tests()
 {
@@ -34,7 +35,12 @@ void add_node_tests()
 
     /* test 7: test value of root's right child's left child (17) */
     assert(test_1[6] == test_1_bst->root->right->left->key);
-
+    
+    int i;
+    for (i = 0; i < test_1_size; i++)
+    {
+        bst_remove(test_1_bst, test_1[i]);
+    }
     free(test_1_bst);
     return;
 }
@@ -81,6 +87,10 @@ void traversal_tests()
     }
     free(post_order_experimental);
 
+    for (i = 0; i < test_trav_1_size; i++)
+    {
+        bst_remove(test_trav_1_bst, test_trav_1[i]);
+    }
     free(test_trav_1_bst);
 
     /*   Expected Tree:
@@ -118,6 +128,11 @@ void traversal_tests()
         assert(post_order_expected_2[i] == post_order_experimental_2[i]);
     }
     free(post_order_experimental_2);
+
+    for (i = 0; i < test_trav_2_size; i++)
+    {
+        bst_remove(test_trav_2_bst, test_trav_2[i]);
+    }
 
     free(test_trav_2_bst);
     return;
@@ -252,6 +267,11 @@ void remove_tests()
                 assert(bst_find(test_rem_bst, test_rem[i])->key == test_rem[i]);
             }
         }
+    }
+
+    for (i = 0; i < test_rem_size; i++)
+    {
+        bst_remove(test_rem_bst, test_rem[i]);
     }
     free(test_rem_bst);
 
@@ -438,6 +458,10 @@ void remove_tests()
             assert(bst_find(test_rem_2_bst, test_rem_2[i])->key == test_rem_2[i]);
         }
     }
+    for (i = 0; i < test_rem_2_size; i++)
+    {
+        bst_remove(test_rem_2_bst, test_rem_2[i]);
+    }
     free(test_rem_2_bst);
 }
 
@@ -454,10 +478,15 @@ void max_depth_tests()
      *  depth of 5
      */
     int test_max_depth[5] = { 1, 3, 4, 69, 10 };
-    int test_max_depth_size = 5;
+    int i, test_max_depth_size = 5;
     struct BST* test_max_depth_bst = bst_new(test_max_depth,
         test_max_depth_size);
     assert(bst_max_depth(test_max_depth_bst) == 5);
+
+    for (i = 0; i < test_max_depth_size; i++)
+    {
+        bst_remove(test_max_depth_bst, test_max_depth[i]);
+    }
     free(test_max_depth_bst);
 
     /* test 2 */
@@ -477,14 +506,104 @@ void max_depth_tests()
     struct BST* test_max_depth_2_bst = bst_new(test_max_depth_2,
         test_max_depth_2_size);
     assert(bst_max_depth(test_max_depth_2_bst) == 4);
+    for (i = 0; i < test_max_depth_2_size; i++)
+    {
+        bst_remove(test_max_depth_2_bst, test_max_depth_2[i]);
+    }
     free(test_max_depth_2_bst);
+
+     /* test 3 */
+    /* tree is:
+     *            3
+     *        1       5
+     *              4   12
+     *  depth of 3
+     */
+    int test_max_depth_3[5] = { 3, 5, 1, 12, 4 };
+    int test_max_depth_3_size = 5;
+    struct BST* test_max_depth_3_bst = bst_new(test_max_depth_3,
+        test_max_depth_3_size);
+    assert(bst_max_depth(test_max_depth_3_bst) == 3);
+    for (i = 0; i < test_max_depth_3_size; i++)
+    {
+        bst_remove(test_max_depth_3_bst, test_max_depth_3[i]);
+    }
+    free(test_max_depth_3_bst);
 }
 
+
+void min_depth_tests()
+{
+    /* test 1 */
+    /* tree is: 
+     *                 1
+	 *  		          3
+	 *  		             4
+	 *  				        69
+	 *  			         10     
+     *
+     *  depth of 5
+     */
+    int test_min_depth[5] = { 1, 3, 4, 69, 10 };
+    int i, test_min_depth_size = 5;
+    struct BST* test_min_depth_bst = bst_new(test_min_depth,
+        test_min_depth_size);
+    assert(bst_min_depth(test_min_depth_bst) == 5);
+    for (i = 0; i < test_min_depth_size; i++)
+    {
+        bst_remove(test_min_depth_bst, test_min_depth[i]);
+    }
+    free(test_min_depth_bst);
+
+    /* test 2 */
+    /* tree is:
+                3
+                 \
+                  9
+                /  \
+               7   20
+                  /
+                15
+
+    *  depth of 3
+     */
+    int test_min_depth_2[5] = { 3, 9, 20, 15, 7 };
+    int test_min_depth_2_size = 5;
+    struct BST* test_min_depth_2_bst = bst_new(test_min_depth_2,
+        test_min_depth_2_size);
+    assert(bst_min_depth(test_min_depth_2_bst) == 3);
+    for (i = 0; i < test_min_depth_2_size; i++)
+    {
+        bst_remove(test_min_depth_2_bst, test_min_depth_2[i]);
+    }
+    free(test_min_depth_2_bst);
+
+     /* test 3 */
+    /* tree is:
+     *            3
+     *        1       5
+     *              4   12
+     *  depth of 2
+     */
+    int test_min_depth_3[5] = { 3, 5, 1, 12, 4 };
+    int test_min_depth_3_size = 5;
+    struct BST* test_min_depth_3_bst = bst_new(test_min_depth_3,
+        test_min_depth_3_size);
+    assert(bst_min_depth(test_min_depth_3_bst) == 2);
+    for (i = 0; i < test_min_depth_3_size; i++)
+    {
+        bst_remove(test_min_depth_3_bst, test_min_depth_3[i]);
+    }
+    free(test_min_depth_3_bst);
+}
 int main(void)
 {
 
     add_node_tests();
     traversal_tests();
     remove_tests();
+    max_depth_tests();
+    min_depth_tests();
+    printf("All tests completed successfully!\n");
     return 0;
 }

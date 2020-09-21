@@ -5,29 +5,9 @@
 #include "bst.h"
 
 /*
- * bst always needs to obey the bst principle, which is that any
- * element's key is greater than or equal to all the keys in the
- * node's left subtree, and less than those in it's right subtree
+ * bst principle: any element's key is greater than or equal to all the keys
+ * in the node's left subtree, and less than those in it's right subtree
  */
-
-/*
- * bst has root node; each node stores a key and optional associated
- * value, and has pointers to two subtrees (left and right).
- * leaves of tree (final nodes) have no children (i.e. the last nodes
- * with values have pointers to NULL for their left and right children
- */
-
-/*
- * a node needs to be a type of struct, that contains members: key, *left,
- * *right (pointers to either the left and right children or NULL)
- */
-
-
-/* functions i will need for BST include create_node, create_bst (empty),
- * bst_new, bst_add, bst_traverse, bst_find, bst_remove, bst_root_val, 
- * left_child, del_root
- */
-
 
 /*
  * Function:  create_node
@@ -36,7 +16,7 @@
  *  
  *  key: (int) value for key of node
  *
- *  returns: the node
+ *  returns: the created node
  */
 struct Node* create_node(int key)
 {
@@ -79,22 +59,20 @@ void bst_add(struct BST* bst, int key)
 {
     /* create the new node */
     struct Node* to_add = create_node(key);
-    /* check if the jawn is empty */
     if (bst->root == NULL)
     {
-        /* if empty, add new node as the root */
+        /* if bst was empty, add new node as the root */
         bst->root = to_add;
         bst->count++;
     }
     else
     {
-        /* if not, add at appropriate spot */
+        /* otherwise, find appropriate spot in bst at which to add new node*/
         struct Node* curr_node = bst->root;
         struct Node* parent = curr_node;
         while (curr_node != NULL)
         {
             parent = curr_node;
-            /* if value of node to be added is < that of curr node, go left */
             if (key < curr_node->key)
             {
                 curr_node = curr_node->left;
@@ -150,7 +128,7 @@ struct BST* bst_new(int* vals, int vals_size)
  *  node: (struct Node*) ptr to current node
  *  order: (int) order of traversal:
  *         0 for in-order, 1 for pre-order, 2 for post-order
- *  visited: (int *[]) ptr to array of ints representing traversal
+ *  visited: (int *) ptr to array of ints representing traversal
  *  visited_idx: (&int) ptr to int storing current index of visited array
  *
  *  returns: none
@@ -200,7 +178,6 @@ void trav_recur(struct Node* node, int order, int* visited,
  */
 int* bst_traverse(struct BST* bst, int order)
 {
-    /* initialize the array */
     int visited_size = bst->count, visited_idx = 0;
     int* visited = calloc(visited_size, sizeof(int));
     trav_recur(bst->root, order, visited, &visited_idx);
@@ -251,7 +228,7 @@ struct Node* bst_find(struct BST* bst, int key)
  *  node: (struct Node*) node from which to initiate search
  *
  *  returns: pointer to input node's left-most child (if input node has
- *           no left children, returns pointer to input node itself) OR NULL?
+ *           no left children, returns pointer to input node itself)
  */
 struct Node* left_child(struct Node* node)
 {
@@ -282,7 +259,7 @@ struct Node* left_child(struct Node* node)
  */
 bool bst_remove(struct BST* bst, int key)
 {
-    /* need pointers to current node and its parent */
+    /* initialize pointers to current node and its parent */
     struct Node* current = bst_find(bst, key);
     if (current == NULL)
     {
@@ -290,10 +267,15 @@ bool bst_remove(struct BST* bst, int key)
     }
     struct Node* parent = current->parent;
     /* if node being removed has 0 children: set its parent to point to NULL
-    *   instead of it, and then free the node's memory */
+     * instead of it, and then free the node's memory */
     /* this is the only case in which we could be freeing entire tree */
     if (current->left == NULL && current->right == NULL)
     {
+        if (current->parent == NULL)
+        {
+            free(current);
+            return true;
+        }
         if (key < parent->key)
         {
             parent->left = NULL;
@@ -311,22 +293,6 @@ bool bst_remove(struct BST* bst, int key)
     else if (current->left && !current->right ||
         current->right && !current->left)
     {
-      /*  struct Node* to_free;
-        if (current->left)
-        {
-            to_free = current->left;
-            current->key = to_free->key;
-            current->left = to_free->left;
-
-        }
-        else
-        {
-            to_free = current->right;
-            current->key = to_free->key;
-            current->right = to_free->right;
-        }
-        bst->count--;
-        free(to_free);*/
         /* get the child node */
         struct Node* child = (current->left) ? current->left : current->right;
         if (current != bst->root)
@@ -350,10 +316,7 @@ bool bst_remove(struct BST* bst, int key)
         free(current);
     }
 
-    /* if the node being removed has 2 children, find its in-order
-        successor, then do the pointer updates, make sure to free mem */
-    /* in this case i will also need pointers to the successor node and 
-        its parent ! */
+    /* if the node being removed has 2 children, use in-order successor */
     else
     {
         struct Node* successor = left_child(current->right);
@@ -361,9 +324,7 @@ bool bst_remove(struct BST* bst, int key)
         bst_remove(bst, successor->key);  /* does the free */
         bst->count--;
         current->key = suc_val;
-
     }
-
     return true;
 }
 
@@ -387,8 +348,8 @@ int bst_root_val(struct BST* bst)
 /*
  * Function:  max_depth_recur
  * --------------------
- *  finds max distance from given node to farthest leaf node
  *  recursive helper function for bst_max_depth
+ *  finds max distance from given node to farthest leaf node
  *  
  *  node: (struct Node*) ptr to node
  *
@@ -432,6 +393,61 @@ int bst_max_depth(struct BST* bst)
 
 
 /*
+ * Function:  min_depth_recur
+ * --------------------
+ *  recursive helper function for bst_min_depth
+ *  finds min distance from given node to farthest leaf node
+ *  
+ *  node: (struct Node*) ptr to node
+ *
+ *  returns: the min depth (integer)
+ */
+int min_depth_recur(struct Node* node)
+{
+    /* return 0 if node is only node in bst */
+    if (node == NULL)
+    {
+        return 0;
+    }
+    /* increment at leaf nodes */
+    if (node->left == NULL && node->right == NULL)
+    {
+        return 1;
+    }
+    /* if node only has one child, get min depth of that child */
+    if (node->left == NULL)
+    {
+        return min_depth_recur(node->right) + 1;
+    }
+    if (node->right == NULL)
+    {
+        return min_depth_recur(node->left) + 1;
+    }
+    /* if node has two children, recursively get min depth of L and R 
+        subtrees and select the minimum */
+    return (min_depth_recur(node->left) > min_depth_recur(node->right) ?
+        min_depth_recur(node->right) : min_depth_recur(node->left)) + 1;
+
+}
+
+
+/*
+ * Function:  bst_min_depth
+ * --------------------
+ *  returns number of nodes along shortest path from root to farthest leaf node
+ *  
+ *  bst: (struct BST*) ptr to BST
+ *
+ *  returns: the BST's max depth (integer)
+ */
+int bst_min_depth(struct BST* bst)
+{
+    struct Node* root_ptr = bst->root;
+    return min_depth_recur(root_ptr);
+}
+
+
+/*
  * Function:  bst_node_level
  * --------------------
  *  returns level of given node in bst (root is considered level 1)
@@ -452,64 +468,3 @@ int bst_node_level(struct BST* bst, struct Node* node)
     return level;
 }
 
-
-//int main(void)
-//{
-//    //struct BST* my_jawn = create_bst();
-//    //bst_add(my_jawn, 69);
-//    //bst_add(my_jawn, 1);
-//    //printf("the root value of the bst i made is %d\n", my_jawn->root->key);
-//    //printf("the count of the jawn i made is %d\n", my_jawn->count);
-//
-//    int vals[] = { 1, 2, 3, 4, 5 };
-//    struct BST* my_jawn = bst_new(vals, 5);
-//
-//    int* traversal = bst_traverse(my_jawn, 1);
-//    for (int i = 0; i < my_jawn->count; i++)
-//    {
-//        printf("%d ", traversal[i]);
-//    }
-//
-//    if (bst_find(my_jawn, 69))
-//    {
-//        printf("i've found a value that doesn't exist in the jawn\n");
-//    }
-//    printf("calling bst_find on the jawn i made for key value 3 gives: %d\n",
-//        bst_find(my_jawn, 3)->key);
-//
-//
-//    bst_add(my_jawn, 69);
-//    bst_add(my_jawn, 10);
-//    printf("the root value of the bst i made is %d\n", my_jawn->root->key);
-//    printf("the count of the jawn i made is %d\n", my_jawn->count);
-//     
-//    /* test removals */
-//    /* remove not working, doesn't decrease size of bst */
-//    bst_remove(my_jawn, 5);
-//    bst_remove(my_jawn, 2);
-//    printf("the count of the jawn i made is %d\n", my_jawn->count);
-//    traversal = bst_traverse(my_jawn, 1);
-//    for (int i = 0; i < my_jawn->count; i++)
-//    {
-//        printf("%d ", traversal[i]);
-//    }
-//    printf("\n");
-//
-//    /* test depth */
-//    /* tree is: 
-//     *                 1
-//	 *  		          3
-//	 *  		             4
-//	 *  				        69
-//	 *  			         10     
-//     *
-//     *  depth of 5
-//     */
-//    int my_jawn_max_depth = bst_max_depth(my_jawn);
-//    printf("the max depth of the jawn i made is: %d\n", my_jawn_max_depth);
-//
-//    int depth_test[] = { 3, 9, 20, 15, 7 };
-//    
-//
-//    return 0;
-//}
