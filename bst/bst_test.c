@@ -14,28 +14,15 @@ void add_node_tests()
     int test_1[7] = { 15, 0, -5, 5, 20, 25, 17 };
     int test_1_size = 7;
     struct BST* test_1_bst = bst_new(test_1, test_1_size);
-
-    /* test 1: verify root node correctly set to 15 */
     assert(test_1[0] == bst_root_val(test_1_bst));
-
-    /* test 2: test value of root's left child (0) */
     assert(test_1[1] == test_1_bst->root->left->key);
-
-    /* test 3: test value of root's right child (20) */
     assert(test_1[4] == test_1_bst->root->right->key);
-
-    /* test 4: test value of root's left left child (-5) */
     assert(test_1[2] == test_1_bst->root->left->left->key);
-
-    /* test 5: test value of root's left child's right child (5) */
     assert(test_1[3] == test_1_bst->root->left->right->key);
-
-    /* test 6: test value of root's right child's right child (25) */
     assert(test_1[5] == test_1_bst->root->right->right->key);
-
-    /* test 7: test value of root's right child's left child (17) */
     assert(test_1[6] == test_1_bst->root->right->left->key);
     
+    /* free memory */
     int i;
     for (i = 0; i < test_1_size; i++)
     {
@@ -59,7 +46,7 @@ void traversal_tests()
     int test_trav_1_size = 10;
     struct BST* test_trav_1_bst = bst_new(test_trav_1, test_trav_1_size);
 
-    /* test 1: in order traversal of the test bst */
+    /* test 1: in order traversal */
     int in_order_expected[10] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     int i;
     int* in_order_experimental = bst_traverse(test_trav_1_bst, 0);
@@ -174,7 +161,7 @@ void remove_tests()
         }
     }
 
-    /* test 2: remove root again */
+    /* test 2: remove root */
        /* Expected Tree:
         *                     20
         *                 0       25
@@ -184,20 +171,8 @@ void remove_tests()
     assert(bst_root_val(test_rem_bst) == 20);
     assert(test_rem_bst->root->right->key == 25);
     assert(test_rem_bst->root->left->key == 0);
-    /* verify all values besides removed are still in tree */
-    for (i = 0; i < test_rem_size; i++)
-    {
-        if (test_rem[i] == 15 || test_rem[i] == 17)
-        {
-            continue;
-        }
-        else
-        {
-            assert(bst_find(test_rem_bst, test_rem[i])->key == test_rem[i]);
-        }
-    }
 
-    /* test 3: remove root yet again */
+    /* test 3: remove root */
        /* Expected Tree:
         *                     25
         *                 0
@@ -207,18 +182,6 @@ void remove_tests()
     assert(bst_root_val(test_rem_bst) == 25);
     assert(test_rem_bst->root->right == NULL);
     assert(test_rem_bst->root->left->key == 0);
-    /* verify all values besides removed are still in tree */
-    for (i = 0; i < test_rem_size; i++)
-    {
-        if (test_rem[i] == 15 || test_rem[i] == 17 || test_rem[i] == 20)
-        {
-            continue;
-        }
-        else
-        {
-            assert(bst_find(test_rem_bst, test_rem[i])->key == test_rem[i]);
-        }
-    }
 
     /* test 4: remove key 5 */
        /* Expected Tree:
@@ -230,45 +193,20 @@ void remove_tests()
     assert(bst_root_val(test_rem_bst) == 25);
     assert(test_rem_bst->root->right == NULL);
     assert(test_rem_bst->root->left->key == 0);
-    /* verify all values besides removed are still in tree */
-    for (i = 0; i < test_rem_size; i++)
-    {
-        if (test_rem[i] == 15 || test_rem[i] == 17 || test_rem[i] == 20 ||
-            test_rem[i] == 5)
-        {
-            continue;
-        }
-        else
-        {
-            assert(bst_find(test_rem_bst, test_rem[i])->key == test_rem[i]);
-        }
 
-        /* test 5: remove key 0 */
-          /* Expected Tree:
-           *                     25
-           *                 -5
-           */
-        bst_remove(test_rem_bst, 0);
-        assert(bst_root_val(test_rem_bst) == 25);
-        assert(test_rem_bst->root->right == NULL);
-        assert(test_rem_bst->root->left->key == -5);
-        assert(test_rem_bst->root->left->right == NULL);
-        assert(test_rem_bst->root->left->left == NULL);
-        /* verify all values besides removed are still in tree */
-        for (i = 0; i < test_rem_size; i++)
-        {
-            if (test_rem[i] == 15 || test_rem[i] == 17 || test_rem[i] == 20 ||
-                test_rem[i] == 5 || test_rem[i] == 0)
-            {
-                continue;
-            }
-            else
-            {
-                assert(bst_find(test_rem_bst, test_rem[i])->key == test_rem[i]);
-            }
-        }
-    }
+    /* test 5: remove key 0 */
+      /* Expected Tree:
+       *                     25
+       *                 -5
+       */
+    bst_remove(test_rem_bst, 0);
+    assert(bst_root_val(test_rem_bst) == 25);
+    assert(test_rem_bst->root->right == NULL);
+    assert(test_rem_bst->root->left->key == -5);
+    assert(test_rem_bst->root->left->right == NULL);
+    assert(test_rem_bst->root->left->left == NULL);
 
+    /* free memory */
     for (i = 0; i < test_rem_size; i++)
     {
         bst_remove(test_rem_bst, test_rem[i]);
@@ -322,18 +260,6 @@ void remove_tests()
     assert(test_rem_2_bst->root->right->right->key == 25);
     assert(test_rem_2_bst->root->right->left == NULL);
     assert(test_rem_2_bst->root->left->right->key == 5);
-    /* verify all values besides removed are still in tree */
-    for (i = 0; i < test_rem_2_size; i++)
-    {
-        if (test_rem_2[i] == 15 || test_rem_2[i] == 17)
-        {
-            continue;
-        }
-        else
-        {
-            assert(bst_find(test_rem_2_bst, test_rem_2[i])->key == test_rem_2[i]);
-        }
-    }
 
     /* test 8: again remove root */
        /* Expected Tree:
@@ -348,18 +274,6 @@ void remove_tests()
     assert(test_rem_2_bst->root->right->right == NULL);
     assert(test_rem_2_bst->root->right->left == NULL);
     assert(test_rem_2_bst->root->left->key == 0);
-    /* verify all values besides removed are still in tree */
-    for (i = 0; i < test_rem_2_size; i++)
-    {
-        if (test_rem_2[i] == 15 || test_rem_2[i] == 17 || test_rem_2[i] == 19)
-        {
-            continue;
-        }
-        else
-        {
-            assert(bst_find(test_rem_2_bst, test_rem_2[i])->key == test_rem_2[i]);
-        }
-    }
 
     /* test 9: again remove root */
        /* Expected Tree:
@@ -373,19 +287,6 @@ void remove_tests()
     assert(test_rem_2_bst->root->right == NULL);
     assert(test_rem_2_bst->root->left->right->key == 5);
     assert(test_rem_2_bst->root->left->left->key == -5);
-    /* verify all values besides removed are still in tree */
-    for (i = 0; i < test_rem_2_size; i++)
-    {
-        if (test_rem_2[i] == 15 || test_rem_2[i] == 17 || test_rem_2[i] == 19
-            || test_rem_2[i] == 20)
-        {
-            continue;
-        }
-        else
-        {
-            assert(bst_find(test_rem_2_bst, test_rem_2[i])->key == test_rem_2[i]);
-        }
-    }
 
     /* test 10: again remove root */
        /* Expected Tree:
@@ -397,19 +298,6 @@ void remove_tests()
     assert(test_rem_2_bst->root->right->key == 5);
     assert(test_rem_2_bst->root->left->key == -5);
     assert(test_rem_2_bst->root->left->left == NULL);
-    /* verify all values besides removed are still in tree */
-    for (i = 0; i < test_rem_2_size; i++)
-    {
-        if (test_rem_2[i] == 15 || test_rem_2[i] == 17 || test_rem_2[i] == 19
-            || test_rem_2[i] == 20 || test_rem_2[i] == 25)
-        {
-            continue;
-        }
-        else
-        {
-            assert(bst_find(test_rem_2_bst, test_rem_2[i])->key == test_rem_2[i]);
-        }
-    }
 
     /* test 11: again remove root */
        /* Expected Tree:
@@ -421,20 +309,6 @@ void remove_tests()
     assert(test_rem_2_bst->root->right == NULL);
     assert(test_rem_2_bst->root->left->key == -5);
     assert(test_rem_2_bst->root->left->left == NULL);
-    /* verify all values besides removed are still in tree */
-    for (i = 0; i < test_rem_2_size; i++)
-    {
-        if (test_rem_2[i] == 15 || test_rem_2[i] == 17 || test_rem_2[i] == 19
-            || test_rem_2[i] == 20 || test_rem_2[i] == 25 || 
-            test_rem_2[i] == 0)
-        {
-            continue;
-        }
-        else
-        {
-            assert(bst_find(test_rem_2_bst, test_rem_2[i])->key == test_rem_2[i]);
-        }
-    }
 
     /* test 12: again remove root */
        /* Expected Tree:
@@ -444,20 +318,8 @@ void remove_tests()
     assert(bst_root_val(test_rem_2_bst) == -5);
     assert(test_rem_2_bst->root->right == NULL);
     assert(test_rem_2_bst->root->left == NULL);
-    /* verify all values besides removed are still in tree */
-    for (i = 0; i < test_rem_2_size; i++)
-    {
-        if (test_rem_2[i] == 15 || test_rem_2[i] == 17 || test_rem_2[i] == 19
-            || test_rem_2[i] == 20 || test_rem_2[i] == 25 || 
-            test_rem_2[i] == 0 || test_rem_2[i] == 5)
-        {
-            continue;
-        }
-        else
-        {
-            assert(bst_find(test_rem_2_bst, test_rem_2[i])->key == test_rem_2[i]);
-        }
-    }
+
+    /* free memory */
     for (i = 0; i < test_rem_2_size; i++)
     {
         bst_remove(test_rem_2_bst, test_rem_2[i]);
@@ -596,14 +458,18 @@ void min_depth_tests()
     }
     free(test_min_depth_3_bst);
 }
+
 int main(void)
 {
-
     add_node_tests();
+    printf("All add_node tests completed successfully!\n");
     traversal_tests();
+    printf("All traversal tests completed successfully!\n");
     remove_tests();
+    printf("All removal tests completed successfully!\n");
     max_depth_tests();
+    printf("All max_depth tests completed successfully!\n");
     min_depth_tests();
-    printf("All tests completed successfully!\n");
+    printf("All min_depth tests completed successfully!\n");
     return 0;
 }

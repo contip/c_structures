@@ -4,43 +4,29 @@
 #include <stdbool.h>
 #include "bst.h"
 
-/*
- * bst principle: any element's key is greater than or equal to all the keys
- * in the node's left subtree, and less than those in it's right subtree
- */
+/* internal functions; initialize empty Node and BST structures */
+struct Node* _create_node(int key);
+struct BST* _create_bst();
+
 
 /*
- * Function:  create_node
+ * Function:  bst_new
  * --------------------
- *  creates a new Node with given key value, sets both children ptr to NULL
- *  
- *  key: (int) value for key of node
+ *  initializes a bst with given values and returns ptr to it
  *
- *  returns: the created node
- */
-struct Node* create_node(int key)
-{
-    struct Node* new_node = (struct Node*)malloc(sizeof(struct Node));
-    new_node->key = key;
-    new_node->left = NULL;
-    new_node->right = NULL;
-    new_node->parent = NULL;
-    return new_node;
-}
-
-
-/*
- * Function:  create_bst
- * --------------------
- *  creates new, empty BST
+ *  vals: (array of int) values with which to initialize the bst
+ *  vals_size: (int) size of values array
  *
- *  returns: ptr to the created empty BST
+ *  returns: ptr to bst initialized with given values
  */
-struct BST* create_bst()
+struct BST* bst_new(int* vals, int vals_size)
 {
-    struct BST* bst = (struct BST*)malloc(sizeof(struct BST));
-    bst->root = NULL;
-    bst->count = 0;
+    struct BST* bst = _create_bst();
+    int i;
+    for (i = 0; i < vals_size; i++)
+    {
+        bst_add(bst, vals[i]);
+    }
     return bst;
 }
 
@@ -58,7 +44,7 @@ struct BST* create_bst()
 void bst_add(struct BST* bst, int key)
 {
     /* create the new node */
-    struct Node* to_add = create_node(key);
+    struct Node* to_add = _create_node(key);
     if (bst->root == NULL)
     {
         /* if bst was empty, add new node as the root */
@@ -95,28 +81,6 @@ void bst_add(struct BST* bst, int key)
         bst->count++;
     }
     return;
-}
-
-
-/*
- * Function:  bst_new
- * --------------------
- *  initializes a bst with given values anad returns ptr to it
- *
- *  vals: (array of int) values with which to initialize the bst
- *  vals_size: (int) size of values array
- *
- *  returns: ptr to bst initialized with given values
- */
-struct BST* bst_new(int* vals, int vals_size)
-{
-    struct BST* bst = create_bst();
-    int i;
-    for (i = 0; i < vals_size; i++)
-    {
-        bst_add(bst, vals[i]);
-    }
-    return bst;
 }
 
 
@@ -169,12 +133,12 @@ void trav_recur(struct Node* node, int order, int* visited,
  * Function:  bst_traverse
  * --------------------
  *  performs traversal of BST in specified order, returning ordered array
- *      of the sequence of node visitation
+ *      representing the sequence of node visitation
  *  
  *  bst: (struct BST*) ptr to BST to traverse
  *  order: (int) 0 for in-order, 1 for pre-order, 2 for post-order
  *
- *  returns: array of ints containing keys of nodes in order visited
+ *  returns: ptr to array of ints containing keys of nodes in order visited
  */
 int* bst_traverse(struct BST* bst, int order)
 {
@@ -249,8 +213,7 @@ struct Node* left_child(struct Node* node)
 /*
  * Function:  bst_remove
  * --------------------
- *  removes node with given key value from BST and returns true if
- *  successful, otherwise false
+ *  removes node with given key value from BST if it exists in BST
  *  
  *  bst: (struct BST*) ptr to BST from which to remove specified node
  *  key: (int) key value of node to remove
@@ -268,7 +231,6 @@ bool bst_remove(struct BST* bst, int key)
     struct Node* parent = current->parent;
     /* if node being removed has 0 children: set its parent to point to NULL
      * instead of it, and then free the node's memory */
-    /* this is the only case in which we could be freeing entire tree */
     if (current->left == NULL && current->right == NULL)
     {
         if (current->parent == NULL)
@@ -287,13 +249,11 @@ bool bst_remove(struct BST* bst, int key)
         bst->count--;
         free(current);
     }
-
     /* if node being removed has 1 child, set its parent to point to that
         child and then free */
     else if (current->left && !current->right ||
         current->right && !current->left)
     {
-        /* get the child node */
         struct Node* child = (current->left) ? current->left : current->right;
         if (current != bst->root)
         {
@@ -315,7 +275,6 @@ bool bst_remove(struct BST* bst, int key)
         bst->count--;
         free(current);
     }
-
     /* if the node being removed has 2 children, use in-order successor */
     else
     {
@@ -333,7 +292,7 @@ bool bst_remove(struct BST* bst, int key)
  * Function:  bst_root_val
  * --------------------
  *  returns value of the root node of given bst
- *      assumes bst non-empty
+ *  assumes bst non-empty
  *  
  *  bst: (struct BST*) ptr to BST from which to get root node's key value
  *
@@ -468,3 +427,59 @@ int bst_node_level(struct BST* bst, struct Node* node)
     return level;
 }
 
+
+/*
+ * Function:  bst_clear
+ * --------------------
+ *  deletes all nodes and frees their memory from input bst
+ *  
+ *  bst: (struct BST*) the bst to clear
+ *
+ *  returns: none
+ */
+void bst_clear(struct BST* bst)
+{
+    printf("count of bst is %d\n", bst->count);
+    while (bst->count > 0)
+    {
+        bst_remove(bst, bst->root->key);
+    }
+    printf("count of bst is %d\n", bst->count);
+    return;
+}
+
+
+/*
+ * Function:  _create_node
+ * --------------------
+ *  creates a new Node with given key value, sets both children ptr to NULL
+ *  
+ *  key: (int) value for key of node
+ *
+ *  returns: the created node
+ */
+struct Node* _create_node(int key)
+{
+    struct Node* new_node = (struct Node*)malloc(sizeof(struct Node));
+    new_node->key = key;
+    new_node->left = NULL;
+    new_node->right = NULL;
+    new_node->parent = NULL;
+    return new_node;
+}
+
+
+/*
+ * Function:  _create_bst
+ * --------------------
+ *  creates new, empty BST
+ *
+ *  returns: ptr to the created empty BST
+ */
+struct BST* _create_bst()
+{
+    struct BST* bst = (struct BST*)malloc(sizeof(struct BST));
+    bst->root = NULL;
+    bst->count = 0;
+    return bst;
+}
