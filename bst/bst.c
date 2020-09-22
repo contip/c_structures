@@ -161,22 +161,25 @@ int* bst_traverse(struct BST* bst, int order)
  */
 struct Node* bst_find(struct BST* bst, int key)
 {
-    struct Node* current_node = bst->root;
-    while (current_node != NULL)
+    if (bst->count > 0)
     {
-        if (key == current_node->key)
+        struct Node* current_node = bst->root;
+        while (current_node != NULL)
         {
-            return current_node;
-        }
-        else
-        {
-            if (key < current_node->key)
+            if (key == current_node->key)
             {
-                current_node = current_node->left;
+                return current_node;
             }
             else
             {
-                current_node = current_node->right;
+                if (key < current_node->key)
+                {
+                    current_node = current_node->left;
+                }
+                else
+               {
+                    current_node = current_node->right;
+                }
             }
         }
     }
@@ -211,16 +214,18 @@ struct Node* left_child(struct Node* node)
 
 
 /*
- * Function:  bst_remove
+ * Function:  remove_helper
  * --------------------
- *  removes node with given key value from BST if it exists in BST
+ *  helper function to remove specified node from BST 
  *  
  *  bst: (struct BST*) ptr to BST from which to remove specified node
  *  key: (int) key value of node to remove
+ *  recur: (bool) if true, function assumes it is in a recursive call
+ *      to 'delete' in-order successor, and will NOT decrement count
  *
  *  returns: true if node w/ given key removed from BST, false otherwise
  */
-bool bst_remove(struct BST* bst, int key)
+bool remove_helper(struct BST* bst, int key, bool recur)
 {
     /* initialize pointers to current node and its parent */
     struct Node* current = bst_find(bst, key);
@@ -236,6 +241,7 @@ bool bst_remove(struct BST* bst, int key)
         if (current->parent == NULL)
         {
             free(current);
+            bst->count = 0;
             return true;
         }
         if (key < parent->key)
@@ -246,7 +252,10 @@ bool bst_remove(struct BST* bst, int key)
         {
             parent->right = NULL;
         }
-        bst->count--;
+        if (!recur)
+        {
+            bst->count--;
+        }
         free(current);
     }
     /* if node being removed has 1 child, set its parent to point to that
@@ -272,7 +281,10 @@ bool bst_remove(struct BST* bst, int key)
             bst->root = child;
             child->parent = NULL;
         }
-        bst->count--;
+        if (!recur)
+        {
+            bst->count--;
+        }
         free(current);
     }
     /* if the node being removed has 2 children, use in-order successor */
@@ -280,11 +292,30 @@ bool bst_remove(struct BST* bst, int key)
     {
         struct Node* successor = left_child(current->right);
         int suc_val = successor->key;
-        bst_remove(bst, successor->key);  /* does the free */
-        bst->count--;
+        remove_helper(bst, successor->key, true);  /* does the free */
+        if (!recur)
+        {
+            bst->count--;
+        }
         current->key = suc_val;
     }
     return true;
+}
+
+
+/*
+ * Function:  bst_remove
+ * --------------------
+ *  removes node with given key value from BST if it exists in BST
+ *  
+ *  bst: (struct BST*) ptr to BST from which to remove specified node
+ *  key: (int) key value of node to remove
+ *
+ *  returns: true if node w/ given key removed from BST, false otherwise
+ */
+bool bst_remove(struct BST* bst, int key)
+{
+    return remove_helper(bst, key, false);
 }
 
 
