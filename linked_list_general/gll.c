@@ -283,50 +283,50 @@ void ll_clear(struct LL* list)
 bool ll_contains(struct LL* list, void* data, enum ListType type)
 {
     struct Node* current = list->head;
-    switch (type)
+    while (current != NULL)
     {
-        case INT:
-            while (current != NULL)
-            {
-                if (*((int*)current->data) == *((int*)data))
+        switch (type)
+        {
+            case INT:
+                if (current->type == INT)
                 {
-                    return true;
+                    if (*((int*)current->data) == *((int*)data))
+                    {
+                        return true;
+                    }
                 }
-                current = current->next;
-            }
-            break;
-        case DOUBLE:
-            while (current != NULL)
-            {
-                if (*((double*)current->data) == *((double*)data))
+                break;
+            case DOUBLE:
+                if (current->type == DOUBLE)
                 {
-                    return true;
+                    if (*((double*)current->data) == *((double*)data))
+                    {
+                        return true;
+                    }
                 }
-                current = current->next;
-            }
-            break;
-        case CHAR:
-            while (current != NULL)
-            {
-                if (*((char*)current->data) == *((char*)data))
+                break;
+            case CHAR:
+                if (current->type == CHAR)
                 {
-                    return true;
+                    if (*((char*)current->data) == *((char*)data))
+                    {
+                        return true;
+                    }
                 }
-                current = current->next;
-            }
-            break;
-        case STRING:
-            while (current != NULL)
-            {
-                if (strcmp((char*)current->data, (char*)data) == 0)
+                break;
+            case STRING:
+                if (current->type == STRING)
                 {
-                    return true;
+                    if (strcmp((char*)current->data, (char*)data) == 0)
+                    {
+                        return true;
+                    }
                 }
-                current = current->next;
-            }
-            break;
-        default:
-            return false;
+                break;
+            default:
+                return false;
+        }
+        current = current->next;
     }
     return false;
 }
