@@ -331,3 +331,216 @@ bool ll_contains(struct LL* list, void* data, enum ListType type)
     return false;
 }
 
+
+/*
+ * Private Function:  _remove_node
+ * --------------------
+ *  removes specified node from specified linked list, freeing memory 
+ *  assumes node exists in LL, and that LL is not empty
+ *
+ *  list: (struct LL*) linked list from which to delete
+ *  node: (struct Node*) ptr to node being removed 
+ *
+ *  returns: none 
+ */
+void _remove_node(struct LL* list, struct Node* node)
+{
+    free(node->data);
+    if (list->count == 1 || list->tail == node)
+    {
+        ll_pop_end(list);
+        return;
+    }
+    if (list->head == node)
+    {
+        ll_pop_front(list);
+        return;
+    }
+    node->prev->next = node->next;
+    node->next->prev = node->prev;
+    list->count--;
+    free(node);
+}
+
+
+/*
+ * Function:  ll_remove_first
+ * --------------------
+ *  removes first node from linked list with value matching input value
+ *
+ *  list: (struct LL*) the linked list
+ *  val: (int) value of the node to be deleted
+ *
+ *  returns: true if node successfully removed, false otherwise
+ */
+bool ll_remove_first(struct LL* list, void* data, enum ListType type)
+{
+    struct Node* current = list->head;
+    while (current != NULL)
+    {
+        switch (type)
+        {
+            case INT:
+                if (current->type == INT)
+                {
+                    if (*((int*)current->data) == *((int*)data))
+                    {
+                        _remove_node(list, current);
+                        return true;
+                    }
+                }
+                break;
+            case DOUBLE:
+                if (current->type == DOUBLE)
+                {
+                    if (*((double*)current->data) == *((double*)data))
+                    {
+                        _remove_node(list, current);
+                        return true;
+                    }
+                }
+                break;
+            case CHAR:
+                if (current->type == CHAR)
+                {
+                    if (*((char*)current->data) == *((char*)data))
+                    {
+                        _remove_node(list, current);
+                        return true;
+                    }
+                }
+                break;
+            case STRING:
+                if (current->type == STRING)
+                {
+                    if (strcmp((char*)current->data, (char*)data) == 0)
+                    {
+                        _remove_node(list, current);
+                        return true;
+                    }
+                }
+                break;
+            default:
+                return false;
+        }
+        current = current->next;
+    }
+    return false;
+}
+
+
+/*
+ * Function:  ll_remove_index
+ * --------------------
+ *  removes node associated with input index
+ *
+ *  list: (struct LL*) the linked list from which to delete
+ *  index: (int) index of the node to be deleted
+ *
+ *  returns: true if node successfully removed, false otherwise
+ */
+bool ll_remove_index(struct LL* list, int index)
+{
+    if (index >= list->count)
+    {
+        return false;
+    }
+    if (index == 0)
+    {
+        _remove_node(list, list->head);
+        return true;
+    }
+    if (index == list->count - 1)
+    {
+        _remove_node(list, list->tail);
+        return true;
+    }
+    int counter = 0;
+    struct Node* current_node = list->head;
+    while (counter != index)
+    {
+        counter++;
+        current_node = current_node->next;
+    }
+    _remove_node(list, current_node);
+    return true;
+}
+
+
+/*
+ * Function:  ll_splice
+ * --------------------
+ *  creates node with specified value and inserts at specified position in LL
+ *
+ *  list: (struct LL*) linked list to which new node will be added 
+ *  data: (void*) void ptr to the value of the node to be added
+ *  type: (enum ListType) data type; one of INT, DOUBLE, CHAR, or STRING
+ *  index: (int) index at which to insert the new node
+ *
+ *  returns: true if node successfully inserted, false otherwise
+ */
+bool ll_splice(struct LL* list, void* data, enum ListType type, int index)
+{
+    if (index >= list->count)
+    {
+        return (index == 0 && list->count == 0) ?
+            ll_add_front(list , data, type) : false;
+    }
+    if (index == 0)
+    {
+        return ll_add_front(list, data, type);
+    }
+    struct Node* to_add = _create_node(data, type);
+    int counter = 0;
+    struct Node* current_node = list->head;
+    while (counter != index)
+    {
+        counter++;
+        current_node = current_node->next;
+    }
+    /* index is the index of the new node to add */
+    /* current_node is to become new_node's child */
+    to_add->prev = current_node->prev;
+    to_add->next = current_node;
+    current_node->prev->next = to_add;
+    current_node->prev = to_add;
+    list->count++;
+    return true;
+}
+
+
+/*
+ * Function:  ll_get
+ * --------------------
+ *  returns ptr to data contained in node specified by input index
+ *  does not delete the node or its data 
+ *
+ *  list: (struct LL*) linked list to which new node will be added 
+ *  index: (int) index at which to insert the new node
+ *
+ *  returns: void ptr to node's data, or NULL if invalid index given
+ */
+void* ll_get(struct LL* list, int index)
+{
+    if (index == 0)
+    {
+        return (list->count > 0) ? list->head->data : NULL;
+    }
+    if (index >= list->count)
+    {
+        return NULL;
+    }
+    if (index == list->count - 1)
+    {
+        return list->tail->data;
+    }
+    int counter = 0;
+    struct Node* current_node = list->head;
+    while (counter != index)
+    {
+        counter++;
+        current_node = current_node->next;
+    }
+   return current_node->data; 
+}
+

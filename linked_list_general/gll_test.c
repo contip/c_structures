@@ -502,7 +502,6 @@ void contains_tests()
     assert(ll_contains(contains_3, &int_vals[0], INT) == false);
     
     /* test 4 mixed values */
-    /* TODO: VALGRIND uninitialized error when searching for doubles */
     struct LL* contains_4 = ll_init();
     int val_1 = 69;
     double val_2 = 69.69;
@@ -539,6 +538,257 @@ void contains_tests()
     free(contains_4);
 }
 
+void remove_first_tests()
+{
+    /* test 1 - simple int removals until empty */
+    struct LL* remove_first_1 = ll_init();
+    int i, int_vals[5] = { 69, -1, 20, 15, 0 };
+    int bad_values[5] = { 68, -2, 21, 14, 1 };
+    for (i = 4; i > -1; i--)
+    {
+        ll_add_front(remove_first_1, &int_vals[i], INT);
+    }
+    for (i = 0; i < 5; i++)
+    {
+        assert(ll_remove_first(remove_first_1, &bad_values[i], INT) == false);
+    }
+    assert(remove_first_1->count == 5);
+    assert(ll_remove_first(remove_first_1, &int_vals[2], INT) == true);
+    /* LL: { 69, -1, 15, 0 } */
+    assert(remove_first_1->count == 4);
+    assert(*((int*)remove_first_1->head->next->next->data) == 15);
+    assert(ll_remove_first(remove_first_1, &int_vals[4], INT) == true);
+    /* LL: { 69, -1, 15 } */
+    assert(remove_first_1->count == 3);
+    assert(*((int*)remove_first_1->tail->data) == 15);
+    assert(ll_remove_first(remove_first_1, &int_vals[1], INT) == true);
+    /* LL: { 69, 15 } */
+    assert(remove_first_1->count == 2);
+    assert(*((int*)remove_first_1->tail->prev->data) == 69);
+    assert(ll_remove_first(remove_first_1, &int_vals[3], INT) == true);
+    /* LL: { 69 } */
+    assert(remove_first_1->count == 1);
+    assert(*((int*)remove_first_1->tail->data) == 69);
+    assert(*((int*)remove_first_1->head->data) == 69);
+    assert(ll_remove_first(remove_first_1, &int_vals[0], INT) == true);
+    /* LL: { } */
+    assert(remove_first_1->count == 0);
+    assert(remove_first_1->head == NULL);
+    assert(remove_first_1->tail == NULL);
+    assert(ll_remove_first(remove_first_1, &int_vals[0], INT) == false);
+
+    /* test 2 - duplicate values */
+    struct LL* remove_first_2 = ll_init();
+    double double_vals[5] = { 69.69, 1.2, 69.69, 69.69, 1.2 };
+    double bad_doubles[5] = { 12.3, -34.2, 33.4, 66.4,  345.4 };
+    for (i = 4; i > -1; i--)
+    {
+        ll_add_front(remove_first_2, &double_vals[i], DOUBLE);
+    }
+    for (i = 0; i < 5; i++)
+    {
+        assert(ll_remove_first(remove_first_2, &bad_doubles[i], DOUBLE) == false);
+    }
+    assert(ll_remove_first(remove_first_2, &double_vals[0], DOUBLE) == true);
+    /* { 1.2, 69.69, 69.69, 1.2 } */
+    assert(remove_first_2->count == 4);
+    assert(*((double*)remove_first_2->head->data) == 1.2);
+    assert(ll_remove_first(remove_first_2, &double_vals[0], DOUBLE) == true);
+    assert(ll_remove_first(remove_first_2, &double_vals[0], DOUBLE) == true);
+    assert(remove_first_2->count == 2);
+    assert(*((double*)remove_first_2->head->next->data) == 1.2);
+    assert(*((double*)remove_first_2->tail->prev->data) == 1.2);
+    assert(ll_remove_first(remove_first_2, &double_vals[1], DOUBLE) == true);
+    assert(ll_remove_first(remove_first_2, &double_vals[1], DOUBLE) == true);
+    assert(remove_first_2->count == 0);
+    assert(remove_first_2->head == NULL);
+    assert(remove_first_2->tail == NULL);
+
+    /* test 3 - mixed datatypes */
+    struct LL* remove_first_3 = ll_init();
+    char char_vals[5] = "Abba!";
+    char string_vals[5][20] = { "dilaudid", "opana", "oxy", "hydro", "dope" };
+    for (i = 0; i < 5; i++)
+    {
+        ll_add_end(remove_first_3, &int_vals[i], INT);
+        ll_add_end(remove_first_3, &double_vals[i], DOUBLE);
+        ll_add_end(remove_first_3, &char_vals[i], CHAR);
+        ll_add_end(remove_first_3, &string_vals[i], STRING);
+    }
+    /* { 69, 69.69, 'A', "dilaudid", -1, 1.2, 'b', "opana", 20, 69.69, 'b',
+     * "oxy", 15, 69.69, 'a', "hydro", 0, 1.2, '!', "dope" } */
+    assert(remove_first_3->count == 20);
+    assert(ll_remove_first(remove_first_3, &char_vals[1], CHAR) == true);
+    assert(ll_contains(remove_first_3, &char_vals[1], CHAR) == true);
+    assert(remove_first_3->count == 19);
+    /* { 69, 69.69, 'A', "dilaudid", -1, 1.2, "opana", 20, 69.69, 'b',
+     * "oxy", 15, 69.69, 'a', "hydro", 0, 1.2, '!', "dope" } */
+    assert(ll_remove_first(remove_first_3, &char_vals[1], CHAR) == true);
+    assert(remove_first_3->count == 18);
+    /* { 69, 69.69, 'A', "dilaudid", -1, 1.2, "opana", 20, 69.69,
+     * "oxy", 15, 69.69, 'a', "hydro", 0, 1.2, '!', "dope" } */
+    assert(ll_contains(remove_first_3, &char_vals[1], CHAR) == false);
+    assert(ll_remove_first(remove_first_3, &string_vals[4], STRING) == true);
+    assert(remove_first_3->count == 17);
+    /* { 69, 69.69, 'A', "dilaudid", -1, 1.2, "opana", 20, 69.69,
+     * "oxy", 15, 69.69, 'a', "hydro", 0, 1.2, '!' } */
+    assert(*((char*)remove_first_3->tail->data) == '!');
+    assert(ll_remove_first(remove_first_3, &double_vals[1], DOUBLE) == true);
+    assert(ll_remove_first(remove_first_3, &double_vals[1], DOUBLE) == true);
+    assert(remove_first_3->count == 15);
+    assert(ll_contains(remove_first_3, &double_vals[1], DOUBLE) == false);
+
+    /* free memory */
+    ll_clear(remove_first_1);
+    ll_clear(remove_first_2);
+    ll_clear(remove_first_3);
+    free(remove_first_1);
+    free(remove_first_2);
+    free(remove_first_3);
+}
+
+void remove_index_tests()
+{
+    int i, int_vals[5] = { 69, -1, 20, 15, 0 };
+    double double_vals[5] = { 69.69, 1.2, 69.69, 69.69, 1.2 };
+    char char_vals[5] = "Abba!";
+    char string_vals[5][20] = { "dilaudid", "opana", "oxy", "hydro", "dope" };
+
+    /* test 1 - simple int removals */
+    struct LL* remove_index_1 = ll_init();
+    for (i = 0; i < 5; i++)
+    {
+        ll_add_end(remove_index_1, &int_vals[i], INT);
+    }
+    assert(ll_remove_index(remove_index_1, 2) == true);
+    assert(*((int*)remove_index_1->head->next->next->data) == 15);
+    assert(remove_index_1->count == 4);
+    assert(ll_remove_index(remove_index_1, 0) == true);
+    assert(remove_index_1->count == 3);
+    assert(*((int*)remove_index_1->head->data) == -1);
+    assert(ll_remove_index(remove_index_1, 0) == true);
+    assert(ll_remove_index(remove_index_1, 0) == true);
+    assert(remove_index_1->count == 1);
+    assert(*((int*)remove_index_1->head->data) == 0);
+    assert(*((int*)remove_index_1->tail->data) == 0);
+    assert(ll_remove_index(remove_index_1, 0) == true);
+    assert(ll_remove_index(remove_index_1, 0) == false);
+    assert(remove_index_1->count == 0);
+
+    /* test 2 - simple int removals */
+    struct LL* remove_index_2 = ll_init();
+    for (i = 0; i < 5; i++)
+    {
+        ll_add_end(remove_index_2, &int_vals[i], INT);
+        ll_add_end(remove_index_2, &double_vals[i], DOUBLE);
+        ll_add_end(remove_index_2, &char_vals[i], CHAR);
+        ll_add_end(remove_index_2, &string_vals[i], STRING);
+    }
+    /* { 69, 69.69, 'A', "dilaudid", -1, 1.2, 'b', "opana", 20, 69.69, 'b',
+     * "oxy", 15, 69.69, 'a', "hydro", 0, 1.2, '!', "dope" } */
+    for (i = 0; i < 15; i++)
+    {
+        assert(ll_remove_index(remove_index_2, remove_index_2->count - 1)
+                == true);
+    }
+    /* { 69, 69.69, 'A', "dilaudid", -1 } */
+    assert(remove_index_2->count == 5);
+    assert(*((int*)remove_index_2->head->data) == 69);
+    assert(*((double*)remove_index_2->head->next->data) == 69.69);
+    assert(*((char*)remove_index_2->head->next->next->data) == 'A');
+    assert(strcmp(((char*)remove_index_2->tail->prev->data), "dilaudid") == 0);
+    assert(*((int*)remove_index_2->tail->data) == -1);
+
+    ll_clear(remove_index_1);
+    ll_clear(remove_index_2);
+    free(remove_index_1);
+    free(remove_index_2);
+
+}
+
+void splice_tests()
+{
+    int i, int_vals[5] = { 69, -1, 20, 15, 0 };
+    double double_vals[5] = { 69.69, 1.2, 69.69, 69.69, 1.2 };
+    char char_vals[5] = "Abba!";
+    char string_vals[5][20] = { "dilaudid", "opana", "oxy", "hydro", "dope" };
+
+    /* test 1 */
+    struct LL* splice_1 = ll_init();
+    for (i = 0; i < 5; i++)
+    {
+        ll_add_end(splice_1, &char_vals[i], CHAR);
+    }
+    /* { 'A', 'b', 'b', 'a', '!' } */
+    assert(ll_splice(splice_1, &int_vals[0], INT, 0) == true);
+    /* { 69, 'A', 'b', 'b', 'a', '!' } */
+    assert(splice_1->count == 6);
+    assert(*((int*)splice_1->head->data) == 69);
+    assert(ll_splice(splice_1, &double_vals[0], DOUBLE, 2) == true);
+    /* { 69, 'A', 69.69, 'b', 'b', 'a', '!' } */
+    assert(splice_1->count == 7);
+    assert(*((double*)splice_1->head->next->next->data) == 69.69);
+    assert(ll_splice(splice_1, &string_vals[0], STRING, 6) == true);
+    /* { 69, 'A', 69.69, 'b', 'b', 'a', "dilaudid", '!' } */
+    assert(splice_1->count == 8);
+    assert(strcmp(((char*)splice_1->tail->prev->data), "dilaudid") == 0);
+    assert(ll_splice(splice_1, &string_vals[0], STRING, 8) == false);
+    
+    /* test 2 */
+    struct LL* splice_2 = ll_init();
+    assert(ll_splice(splice_2, &string_vals[0], STRING, 0) == true);
+    /* { "dilaudid" } */
+    assert(ll_splice(splice_2, &double_vals[0], DOUBLE, 0) == true);
+    /* { 69.69, "dilaudid" } */
+    assert(ll_splice(splice_2, &int_vals[0], INT, 1) == true);
+    /* { 69.69, 69, "dilaudid" } */
+    assert(ll_splice(splice_2, &int_vals[0], INT, 0) == true);
+    /* { 69, 69.69, 69, "dilaudid" } */
+    assert(ll_splice(splice_2, &string_vals[0], STRING, 0) == true);
+    /* { "dilaudid", 69, 69.69, 69, "dilaudid" } */
+    assert(splice_2->count == 5);
+    assert(strcmp(((char*)splice_2->tail->data), "dilaudid") == 0);
+    assert(strcmp(((char*)splice_2->head->data), "dilaudid") == 0);
+    assert(*((int*)splice_2->head->next->data) == 69);
+    assert(*((int*)splice_2->tail->prev->data) == 69);
+    assert(*((double*)splice_2->tail->prev->prev->data) == 69.69);
+    
+    /* free memory */
+    ll_clear(splice_1);
+    ll_clear(splice_2);
+    free(splice_1);
+    free(splice_2);
+}
+
+void get_tests()
+{
+    int i, int_vals[5] = { 69, -1, 20, 15, 0 };
+    double double_vals[5] = { 69.69, 1.2, 69.69, 69.69, 1.2 };
+    char char_vals[5] = "Abba!";
+    char string_vals[5][20] = { "dilaudid", "opana", "oxy", "hydro", "dope" };
+
+    struct LL* get_1 = ll_init();
+    for (i = 0; i < 5; i++)
+    {
+        ll_add_end(get_1, &int_vals[i], INT);
+        ll_add_end(get_1, &double_vals[i], DOUBLE);
+        ll_add_end(get_1, &char_vals[i], CHAR);
+        ll_add_end(get_1, &string_vals[i], STRING);
+    }
+    /* { 69, 69.69, 'A', "dilaudid", -1, 1.2, 'b', "opana", 20, 69.69, 'b',
+     * "oxy", 15, 69.69, 'a', "hydro", 0, 1.2, '!', "dope" } */
+    assert(*((int*)ll_get(get_1, 0)) == 69);
+    assert(*((double*)ll_get(get_1, 1)) == 69.69);
+    assert(*((char*)ll_get(get_1, 2)) == 'A');
+    assert(strcmp(((char*)ll_get(get_1, 3)), "dilaudid") == 0);
+    assert(strcmp(((char*)ll_get(get_1, 19)), "dope") == 0);
+    assert(*((char*)ll_get(get_1, 18)) == '!');
+    assert(ll_get(get_1, 20) == NULL);
+
+    ll_clear(get_1);
+    free(get_1);
+}
+
 int main(void)
 {
     init_tests();
@@ -555,5 +805,13 @@ int main(void)
     printf("All clear tests passed!\n");
     contains_tests();
     printf("All contains tests passed!\n");
+    remove_first_tests();
+    printf("All remove_first tests passed!\n");
+    remove_index_tests();
+    printf("All remove_index tests passed!\n");
+    splice_tests();
+    printf("All splice tests passed!\n");
+    get_tests();
+    printf("All get tests passed!\n");
     return 0;
 }
