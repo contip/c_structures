@@ -34,6 +34,8 @@ bool ll_add_end(struct LL* list, void* data, enum ListType type);  /* append */
 bool ll_add_front(struct LL* list, void* data, enum ListType type); /*prepend*/
 void* ll_pop_end(struct LL* list);               /* pop last element from LL */
 void* ll_pop_front(struct LL* list);            /* pop first element from LL */
+void ll_clear(struct LL* list);                 /* clear all entries from LL */
+bool ll_contains(struct LL* list, void* data, enum ListType type); /* search */
 
 #endif
 

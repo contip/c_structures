@@ -98,7 +98,16 @@ void add_end_tests()
     assert(*(int*)add_end_5->tail->data == -30);
 
     /* free memory */
-
+    ll_clear(add_end_1);
+    ll_clear(add_end_2);
+    ll_clear(add_end_3);
+    ll_clear(add_end_4);
+    ll_clear(add_end_5);
+    free(add_end_1);
+    free(add_end_2);
+    free(add_end_3);
+    free(add_end_4);
+    free(add_end_5);
     return;
 }
 
@@ -187,7 +196,16 @@ void add_front_tests()
     assert(*(int*)add_front_5->tail->data == 69);
 
     /* free memory */
-
+    ll_clear(add_front_1);
+    ll_clear(add_front_2);
+    ll_clear(add_front_3);
+    ll_clear(add_front_4);
+    ll_clear(add_front_5);
+    free(add_front_1);
+    free(add_front_2);
+    free(add_front_3);
+    free(add_front_4);
+    free(add_front_5);
     return;
 }
 
@@ -287,6 +305,13 @@ void pop_end_tests()
     free(result);
     assert(pop_end_5->count == 0);
     assert(ll_pop_end(pop_end_5) == NULL);
+
+    /* free memory */
+    free(pop_end_1);
+    free(pop_end_2);
+    free(pop_end_3);
+    free(pop_end_4);
+    free(pop_end_5);
 }
 
 void pop_front_tests()
@@ -386,6 +411,132 @@ void pop_front_tests()
     free(result);
     assert(pop_front_5->count == 0);
     assert(ll_pop_front(pop_front_5) == NULL);
+
+    /* free memory */
+    free(pop_front_1);
+    free(pop_front_2);
+    free(pop_front_3);
+    free(pop_front_4);
+    free(pop_front_5);
+}
+
+void clear_tests()
+{
+    /* test 1 */
+    struct LL* clear_1 = ll_init();
+    int i, int_vals[5] = { 69, -1, 20, 15, 0 };
+    for (i = 0; i < 5; i++)
+    {
+        ll_add_end(clear_1, &int_vals[i], INT);
+    }
+    assert(clear_1->count == 5);
+    ll_clear(clear_1);
+    assert(clear_1->count == 0);
+    assert(clear_1->head == NULL);
+    assert(clear_1->tail == NULL);
+
+    /* test 2 - clearing empty LL should not cause errors */
+    struct LL* clear_2 = ll_init();
+    ll_clear(clear_2);
+    assert(clear_2->count == 0);
+    assert(clear_2->head == NULL);
+    assert(clear_2->tail == NULL);
+
+    /* test 3 - clearing mixed LL with mixed datatypes */
+    struct LL* clear_3 = ll_init();
+    int val_1 = 69;
+    double val_2 = 69.69;
+    char val_3 = 'z';
+    char val_4[10] = "aaaaaaaaa";
+    int val_5 = -30;
+    ll_add_front(clear_3, &val_1, INT);
+    ll_add_front(clear_3, &val_2, DOUBLE);
+    ll_add_front(clear_3, &val_3, CHAR);
+    ll_add_front(clear_3, &val_4, STRING);
+    ll_add_front(clear_3, &val_5, INT);
+    assert(clear_3->count == 5);
+    ll_clear(clear_3);
+    assert(clear_3->count == 0);
+    assert(clear_3->head == NULL);
+    assert(clear_3->tail == NULL);
+
+    /* free memory */
+    free(clear_1);
+    free(clear_2);
+    free(clear_3);
+}
+
+void contains_tests()
+{
+    /* test 1 */
+    struct LL* contains_1 = ll_init();
+    int i, int_vals[5] = { 69, -1, 20, 15, 0 };
+    for (i = 0; i < 5; i++)
+    {
+        ll_add_end(contains_1, &int_vals[i], INT);
+    }
+    assert(contains_1->count == 5);
+    int bad_search_vals[5] = { 68, -2, 21, 14, 1 };
+    for (i = 0; i < 5; i++)
+    {
+        assert(ll_contains(contains_1, &int_vals[i], INT) == true);
+        assert(ll_contains(contains_1, &bad_search_vals[i], INT) == false);
+    }
+
+    /* test 2 searching empty LL should return false */
+    struct LL* contains_2 = ll_init();
+    for (i = 0; i < 5; i++)
+    {
+        assert(ll_contains(contains_2, &int_vals[i], INT) == false);
+        assert(ll_contains(contains_2, &bad_search_vals[i], INT) == false);
+    }
+
+    /* test 3 searching for a value that has been removed */
+    struct LL* contains_3 = ll_init();
+    for (i = 0; i < 5; i++)
+    {
+        ll_add_end(contains_3, &int_vals[i], INT);
+    }
+    assert(ll_contains(contains_3, &int_vals[0], INT) == true);
+    free(ll_pop_front(contains_3));
+    assert(ll_contains(contains_3, &int_vals[0], INT) == false);
+    
+    /* test 4 mixed values */
+    /* TODO: VALGRIND uninitialized error when searching for doubles */
+    struct LL* contains_4 = ll_init();
+    int val_1 = 69;
+    double val_2 = 69.69;
+    char val_3 = 'z';
+    char val_4[10] = "aaaaaaaaa";
+    int val_5 = -30;
+    ll_add_end(contains_4, &val_1, INT);
+    ll_add_end(contains_4, &val_2, DOUBLE);
+    ll_add_end(contains_4, &val_3, CHAR);
+    ll_add_end(contains_4, &val_4, STRING);
+    ll_add_end(contains_4, &val_5, INT);
+    assert(contains_4->count == 5);
+    double bad_doubles[5] = { .2134, 324.3, 2342.22, 0.0034, 21.2 };
+    char bad_chars[5] = "SLURM";
+    char bad_strings[5][10] = { "dog", "cat", "bike", "guitar", "phone" };
+
+    assert(ll_contains(contains_4, &val_2, DOUBLE) == true);
+    for (i = 0; i < 5; i++)
+    {
+        
+        assert(ll_contains(contains_4, &bad_doubles[i], DOUBLE) == false);
+        assert(ll_contains(contains_4, &bad_chars[i], CHAR) == false);
+        assert(ll_contains(contains_4, &bad_strings[i], STRING) == false);
+    }
+
+    /* free memory */
+    ll_clear(contains_1);
+    ll_clear(contains_2);
+    ll_clear(contains_3);
+    ll_clear(contains_4);
+    free(contains_1);
+    free(contains_2);
+    free(contains_3);
+    free(contains_4);
 }
 
 int main(void)
@@ -400,5 +551,9 @@ int main(void)
     printf("All pop_end tests passed!\n");
     pop_front_tests();
     printf("All pop_front tests passed!\n");
+    clear_tests();
+    printf("All clear tests passed!\n");
+    contains_tests();
+    printf("All contains tests passed!\n");
     return 0;
 }

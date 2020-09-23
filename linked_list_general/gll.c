@@ -5,8 +5,6 @@
 #include "gll.h"
 
 
-
-
 /*
  * Private Function:  _print_node
  * --------------------
@@ -35,66 +33,6 @@ void _print_node(struct Node* node)
         default:
             printf("Error printing node data!\n");
     }
-}
-
-
-/*
- * Private Function:  _return_int
- * --------------------
- *  returns value of node if node is of type INT
- *
- *  node: (struct Node*) ptr to node whose value will be returned
- *
- *  returns: integer representing the input node's value 
- */
-int _return_int(struct Node* node)
-{
-    return *((int*)node->data);
-}
-
-
-/*
- * Private Function:  _return_float
- * --------------------
- *  returns value of node if node is of type FLOAT
- *
- *  node: (struct Node*) ptr to node whose value will be returned
- *
- *  returns: float representing the input node's value 
- */
-double _return_double(struct Node* node)
-{
-    return *((double*)node->data);
-}
-
-
-/*
- * Private Function:  _return_char
- * --------------------
- *  returns value of node if node is of type CHAR
- *
- *  node: (struct Node*) ptr to node whose value will be returned
- *
- *  returns: char representing the input node's value 
- */
-char _return_char(struct Node* node)
-{
-    return *((char*)node->data);
-}
-
-
-/*
- * Private Function:  _return_string
- * --------------------
- *  returns value of node if node is of type STRING
- *
- *  node: (struct Node*) ptr to node whose value will be returned
- *
- *  returns: string representing the input node's value 
- */
-char* _return_string(struct Node* node)
-{
-    return (char*)node->data; 
 }
 
 
@@ -306,17 +244,90 @@ void* ll_pop_front(struct LL* list)
 /*
  * Function:  ll_clear
  * --------------------
- *  deletes all nodes from LL, freeing memory in the process
+ *  clears LL by freeing each Node as well as each Node's data
  *  does not free the LL structure itself 
  *
- *  list: (struct LL*) the linked list
+ *  list: (struct LL*) the linked list to clear
  *
  *  returns: none
  */
 void ll_clear(struct LL* list)
 {
-    /* each node's data memory must be freed, as well as the node itself */
-    /* TODO: IMPLEMENT pop procedures before a full clear procedure */
+    struct Node* current = list->head;
+    while (current != NULL)
+    {
+        struct Node* prev = current;
+        void* node_data = current->data;
+        free(node_data);
+        current = current->next;
+        free(prev);
+    }
+    list->count = 0;
+    list->head = NULL;
+    list->tail = NULL;
     return;
-
 }
+
+
+/*
+ * Function:  ll_contains
+ * --------------------
+ *  determines whether node with given value exists in linked list 
+ *
+ *  list: (struct LL*) the linked list
+ *  data: (void*) void ptr to data to be searched for
+ *  type: (enum ListType) data type; one of INT, DOUBLE, CHAR, or STRING
+ *
+ *  returns: true if node matching value found, false otherwise
+ */
+bool ll_contains(struct LL* list, void* data, enum ListType type)
+{
+    struct Node* current = list->head;
+    switch (type)
+    {
+        case INT:
+            while (current != NULL)
+            {
+                if (*((int*)current->data) == *((int*)data))
+                {
+                    return true;
+                }
+                current = current->next;
+            }
+            break;
+        case DOUBLE:
+            while (current != NULL)
+            {
+                if (*((double*)current->data) == *((double*)data))
+                {
+                    return true;
+                }
+                current = current->next;
+            }
+            break;
+        case CHAR:
+            while (current != NULL)
+            {
+                if (*((char*)current->data) == *((char*)data))
+                {
+                    return true;
+                }
+                current = current->next;
+            }
+            break;
+        case STRING:
+            while (current != NULL)
+            {
+                if (strcmp((char*)current->data, (char*)data) == 0)
+                {
+                    return true;
+                }
+                current = current->next;
+            }
+            break;
+        default:
+            return false;
+    }
+    return false;
+}
+
