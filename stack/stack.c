@@ -106,7 +106,7 @@ void* stack_pop(Stack* stack)
 /*
  * Function:  stack_clear
  * --------------------
- *  clears Stack by freeing each Node as well as each Node's data
+ *  clears input Stack of all its Nodes
  *  ***does not free the Stack structure itself***
  *
  *  stack: (Stack*) the stack to clear
@@ -276,7 +276,7 @@ void _print_node(Node* node)
  *  type: (enum StackType) node data type
  *       one of INT, DOUBLE, CHAR, STRING, or DATA
  *
- *  returns: true if node successfully appended, false otherwise 
+ *  returns: ptr to the created Node
  */
 Node* _create_node(void* data, enum StackType type)
 {

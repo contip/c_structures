@@ -164,7 +164,7 @@ void* ll_pop_front(struct LL* list)
 /*
  * Function:  ll_clear
  * --------------------
- *  clears LL by freeing each Node as well as each Node's data
+ *  clears input LL of all its Nodes
  *  ***does not free the LL structure itself***
  *
  *  list: (struct LL*) the linked list to clear
@@ -541,7 +541,7 @@ void _print_node(struct Node* node)
  *  type: (enum ListType) node data type
  *       one of INT, DOUBLE, CHAR, STRING, or DATA
  *
- *  returns: true if node successfully appended, false otherwise 
+ *  returns: ptr to the created Node
  */
 struct Node* _create_node(void* data, enum ListType type)
 {
