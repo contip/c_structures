@@ -54,7 +54,7 @@ void ll_print(struct LL* list)
  *
  *  list: (struct LL*) linked list to which new node will be appended 
  *  data: (void*) void ptr representing the value of the node to be added
- *  type: (enum ListType) data type; one of INT, DOUBLE, CHAR, or STRING
+ *  type: (enum ListType) data type; one of INT, DOUBLE, CHAR, STRING, or DATA
  *
  *  returns: true if node successfully appended, false otherwise 
  */
@@ -80,7 +80,7 @@ bool ll_append(struct LL* list, void* data, enum ListType type)
  *
  *  list: (struct LL*) linked list to which new node will be added 
  *  data: (void*) void ptr representing the value of the node to be added
- *  type: (enum ListType) data type; one of INT, DOUBLE, CHAR, or STRING
+ *  type: (enum ListType) data type; one of INT, DOUBLE, CHAR, STRING, or DATA
  *
  *  returns: true if node successfully prepended, false otherwise 
  */
@@ -103,7 +103,6 @@ bool ll_prepend(struct LL* list, void* data, enum ListType type)
  * Function:  ll_pop_end
  * --------------------
  *  removes tail node from LL and returns ptr to its data value
- *  ***returned node data is malloced and must be freed by caller***
  *
  *  list: (struct LL*) linked list from which to pop
  *
@@ -135,7 +134,6 @@ void* ll_pop_end(struct LL* list)
  * Function:  ll_pop_front
  * --------------------
  *  removes head node from LL and returns ptr its data value
- *  ***returned node data is malloced and must be freed by caller***
  *
  *  list: (struct LL*) linked list from which to pop
  *
@@ -170,17 +168,26 @@ void* ll_pop_front(struct LL* list)
  *  ***does not free the LL structure itself***
  *
  *  list: (struct LL*) the linked list to clear
+ *  deep: (bool) determines whether to perform a shallow deep clear
+ *          false - free all nodes in input LL
+ *          true - free all nodes along with the data of each node
  *
  *  returns: none
  */
-void ll_clear(struct LL* list)
+void ll_clear(struct LL* list, bool deep)
 {
     struct Node* current = list->head;
     while (current != NULL)
     {
         struct Node* prev = current;
-        void* node_data = current->data;
-        free(node_data);
+        if (deep)
+        {
+            if (current->type != DATA)
+            {
+                void* node_data = current->data;
+                free(node_data);
+            }
+        }
         current = current->next;
         free(prev);
     }
@@ -198,7 +205,7 @@ void ll_clear(struct LL* list)
  *
  *  list: (struct LL*) linked list to search
  *  data: (void*) void ptr to data to be searched for
- *  type: (enum ListType) data type; one of INT, DOUBLE, CHAR, or STRING
+ *  type: (enum ListType) data type; one of INT, DOUBLE, CHAR, STRING, or DATA
  *
  *  returns: true if node matching value found, false otherwise
  */
@@ -245,6 +252,17 @@ bool ll_contains(struct LL* list, void* data, enum ListType type)
                     }
                 }
                 break;
+            case DATA:
+                if (current->type == DATA)
+                {
+                    /* in the case of general data, check if the two pointers
+                     * both refer to the same object */
+                    if (current->data == data)
+                    {
+                        return true;
+                    }
+                }
+                break;
             default:
                 return false;
         }
@@ -261,7 +279,7 @@ bool ll_contains(struct LL* list, void* data, enum ListType type)
  *
  *  list: (struct LL*) the linked list from which to delete
  *  data: (void*) void ptr to data to search nodes for
- *  type: (enum ListType) data type; one of INT, DOUBLE, CHAR, or STRING
+ *  type: (enum ListType) data type; one of INT, DOUBLE, CHAR, STRING, or DATA
  *
  *  returns: true if node successfully removed, false otherwise
  */
@@ -306,6 +324,16 @@ bool ll_remove_first(struct LL* list, void* data, enum ListType type)
                 if (current->type == STRING)
                 {
                     if (strcmp((char*)current->data, (char*)data) == 0)
+                    {
+                        _remove_node(list, current);
+                        return true;
+                    }
+                }
+                break;
+            case DATA:
+                if (current->type == DATA)
+                {
+                    if (current->data == data)
                     {
                         _remove_node(list, current);
                         return true;
@@ -366,7 +394,7 @@ bool ll_remove_index(struct LL* list, int index)
  *
  *  list: (struct LL*) linked list to which new node will be added 
  *  data: (void*) void ptr to the value of the node to be added
- *  type: (enum ListType) data type; one of INT, DOUBLE, CHAR, or STRING
+ *  type: (enum ListType) data type; one of INT, DOUBLE, CHAR, STRING, or DATA
  *  index: (int) index at which to insert the new node
  *
  *  returns: true if node successfully inserted, false otherwise
@@ -449,7 +477,10 @@ void* ll_get(struct LL* list, int index)
  */
 void _remove_node(struct LL* list, struct Node* node)
 {
-    free(node->data);
+    if (node->type != DATA)
+    {
+        free(node->data);
+    }
     if (list->count == 1 || list->tail == node)
     {
         ll_pop_end(list);
@@ -492,6 +523,9 @@ void _print_node(struct Node* node)
         case STRING:
             printf("%s ", (char*)node->data);
             break;
+        case DATA:
+            printf("Object(%p) ", node->data);
+            break;
         default:
             printf("Error printing node data!\n");
     }
@@ -504,7 +538,8 @@ void _print_node(struct Node* node)
  *  creates node using input data
  *
  *  data: (void*) void ptr to the value that will be assigned to the node
- *  type: (enum ListType) node data type; one of INT, DOUBLE, CHAR, or STRING
+ *  type: (enum ListType) node data type
+ *       one of INT, DOUBLE, CHAR, STRING, or DATA
  *
  *  returns: true if node successfully appended, false otherwise 
  */
@@ -534,8 +569,12 @@ struct Node* _create_node(void* data, enum ListType type)
             data_size = strlen((const char*)data) + 1;
             to_add->data = malloc(sizeof(char) * data_size);
             break;
+        case DATA:
+            /* in the case of general data, just store pointer */
+            to_add->data = data;
+            return to_add;
         default:
-            return false;
+            return NULL;
     }
     /* copy data by byte into newly allocated memory */
     int i;

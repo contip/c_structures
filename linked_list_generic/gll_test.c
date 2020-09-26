@@ -97,11 +97,11 @@ void append_tests()
     assert(*(int*)append_5->tail->data == -30);
 
     /* free memory */
-    ll_clear(append_1);
-    ll_clear(append_2);
-    ll_clear(append_3);
-    ll_clear(append_4);
-    ll_clear(append_5);
+    ll_clear(append_1, true);
+    ll_clear(append_2, true);
+    ll_clear(append_3, true);
+    ll_clear(append_4, true);
+    ll_clear(append_5, true);
     free(append_1);
     free(append_2);
     free(append_3);
@@ -195,11 +195,11 @@ void prepend_tests()
     assert(*(int*)prepend_5->tail->data == 69);
 
     /* free memory */
-    ll_clear(prepend_1);
-    ll_clear(prepend_2);
-    ll_clear(prepend_3);
-    ll_clear(prepend_4);
-    ll_clear(prepend_5);
+    ll_clear(prepend_1, true);
+    ll_clear(prepend_2, true);
+    ll_clear(prepend_3, true);
+    ll_clear(prepend_4, true);
+    ll_clear(prepend_5, true);
     free(prepend_1);
     free(prepend_2);
     free(prepend_3);
@@ -429,14 +429,14 @@ void clear_tests()
         ll_append(clear_1, &int_vals[i], INT);
     }
     assert(clear_1->count == 5);
-    ll_clear(clear_1);
+    ll_clear(clear_1, true);
     assert(clear_1->count == 0);
     assert(clear_1->head == NULL);
     assert(clear_1->tail == NULL);
 
     /* test 2 - clearing empty LL should not cause errors */
     struct LL* clear_2 = ll_init();
-    ll_clear(clear_2);
+    ll_clear(clear_2, true);
     assert(clear_2->count == 0);
     assert(clear_2->head == NULL);
     assert(clear_2->tail == NULL);
@@ -454,7 +454,7 @@ void clear_tests()
     ll_prepend(clear_3, &val_4, STRING);
     ll_prepend(clear_3, &val_5, INT);
     assert(clear_3->count == 5);
-    ll_clear(clear_3);
+    ll_clear(clear_3, true);
     assert(clear_3->count == 0);
     assert(clear_3->head == NULL);
     assert(clear_3->tail == NULL);
@@ -527,10 +527,10 @@ void contains_tests()
     }
 
     /* free memory */
-    ll_clear(contains_1);
-    ll_clear(contains_2);
-    ll_clear(contains_3);
-    ll_clear(contains_4);
+    ll_clear(contains_1, true);
+    ll_clear(contains_2, true);
+    ll_clear(contains_3, true);
+    ll_clear(contains_4, true);
     free(contains_1);
     free(contains_2);
     free(contains_3);
@@ -638,9 +638,9 @@ void remove_first_tests()
     assert(ll_contains(remove_first_3, &double_vals[1], DOUBLE) == false);
 
     /* free memory */
-    ll_clear(remove_first_1);
-    ll_clear(remove_first_2);
-    ll_clear(remove_first_3);
+    ll_clear(remove_first_1, true);
+    ll_clear(remove_first_2, true);
+    ll_clear(remove_first_3, true);
     free(remove_first_1);
     free(remove_first_2);
     free(remove_first_3);
@@ -698,8 +698,8 @@ void remove_index_tests()
     assert(strcmp(((char*)remove_index_2->tail->prev->data), "dilaudid") == 0);
     assert(*((int*)remove_index_2->tail->data) == -1);
 
-    ll_clear(remove_index_1);
-    ll_clear(remove_index_2);
+    ll_clear(remove_index_1, true);
+    ll_clear(remove_index_2, true);
     free(remove_index_1);
     free(remove_index_2);
 
@@ -753,8 +753,8 @@ void splice_tests()
     assert(*((double*)splice_2->tail->prev->prev->data) == 69.69);
     
     /* free memory */
-    ll_clear(splice_1);
-    ll_clear(splice_2);
+    ll_clear(splice_1, true);
+    ll_clear(splice_2, true);
     free(splice_1);
     free(splice_2);
 }
@@ -784,7 +784,7 @@ void get_tests()
     assert(*((char*)ll_get(get_1, 18)) == '!');
     assert(ll_get(get_1, 20) == NULL);
 
-    ll_clear(get_1);
+    ll_clear(get_1, true);
     free(get_1);
 }
 
