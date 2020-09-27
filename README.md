@@ -248,15 +248,15 @@ Initialize simple linked list with an array of integers and the size of the
 array.  Initialize an empty SLL by passing a NULL pointer and a `vals_size`
 of 0.
 
->void sll_print(SLL* list)
->void sll_append(SLL* list, int val)
->void sll_prepend(SLL* list, int val)
->int sll_pop_end(SLL* list)
->int sll_pop_front(SLL* list)
->bool sll_contains(SLL* list, int val)
->bool sll_remove_first(SLL* list, int val)
->bool sll_remove_index(SLL* list, int index)
->void sll_splice(SLL* list, int index, int val)
+ - void sll_print(SLL* list)
+ - void sll_append(SLL* list, int val)
+ - void sll_prepend(SLL* list, int val)
+ - int sll_pop_end(SLL* list)
+ - int sll_pop_front(SLL* list)
+ - bool sll_contains(SLL* list, int val)
+ - bool sll_remove_first(SLL* list, int val)
+ - bool sll_remove_index(SLL* list, int index)
+ - void sll_splice(SLL* list, int index, int val)
 ##### void sll_clear(SLL* list)
 Clears the specified simple linked `list`.  Does not require any additional
 parameters.
