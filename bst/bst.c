@@ -4,13 +4,13 @@
 #include <string.h>
 
 /* internal helper functions */
-struct Node* _create_node(int key);
-struct BST* _create_bst();
-struct Node* _left_child(struct Node* node);
-bool _remove_helper(struct BST* bst, int key, bool recur);
-int _max_depth_recur(struct Node* node);
-int _min_depth_recur(struct Node* node);
-void _trav_recur(struct Node* node, int order, int* visited, 
+Node* _create_node(int key);
+BST* _create_bst();
+Node* _left_child(Node* node);
+bool _remove_helper(BST* bst, int key, bool recur);
+int _max_depth_recur(Node* node);
+int _min_depth_recur(Node* node);
+void _trav_recur(Node* node, int order, int* visited, 
     int* visited_idx);
 
 
@@ -24,9 +24,9 @@ void _trav_recur(struct Node* node, int order, int* visited,
  *
  *  returns: ptr to bst initialized with given values
  */
-struct BST* bst_init(int* vals, int vals_size)
+BST* bst_init(int* vals, int vals_size)
 {
-    struct BST* bst = _create_bst();
+    BST* bst = _create_bst();
     int i;
     for (i = 0; i < vals_size; i++)
     {
@@ -41,15 +41,15 @@ struct BST* bst_init(int* vals, int vals_size)
  * --------------------
  *  adds node to BST; becomes root node if BST was empty
  *  
- *  bst: (struct BST*) BST to which new node is to be added
+ *  bst: (BST*) BST to which new node is to be added
  *  key: (int) value for key of node to add
  *
  *  returns: none
  */
-void bst_add(struct BST* bst, int key)
+void bst_add(BST* bst, int key)
 {
     /* create the new node */
-    struct Node* to_add = _create_node(key);
+    Node* to_add = _create_node(key);
     if (bst->root == NULL)
     {
         /* if bst was empty, add new node as the root */
@@ -59,8 +59,8 @@ void bst_add(struct BST* bst, int key)
     else
     {
         /* otherwise, find appropriate spot in bst at which to add new node*/
-        struct Node* curr_node = bst->root;
-        struct Node* parent = curr_node;
+        Node* curr_node = bst->root;
+        Node* parent = curr_node;
         while (curr_node != NULL)
         {
             parent = curr_node;
@@ -95,12 +95,12 @@ void bst_add(struct BST* bst, int key)
  *  performs traversal of BST in specified order, returning ordered array
  *      representing the sequence of node visitation
  *  
- *  bst: (struct BST*) ptr to BST to traverse
+ *  bst: (BST*) ptr to BST to traverse
  *  order: (int) 0 for in-order, 1 for pre-order, 2 for post-order
  *
  *  returns: ptr to array of ints containing keys of nodes in order visited
  */
-int* bst_traverse(struct BST* bst, int order)
+int* bst_traverse(BST* bst, int order)
 {
     int visited_size = bst->count, visited_idx = 0;
     int* visited = calloc(visited_size, sizeof(int));
@@ -114,16 +114,16 @@ int* bst_traverse(struct BST* bst, int order)
  * --------------------
  *  checks to see if a node with given key exists in bst
  *  
- *  bst: (struct BST*) ptr to BST to search
+ *  bst: (BST*) ptr to BST to search
  *  key: (int) key value to search for
  *
  *  returns: ptr to the node if it exists in BST, otherwise NULL
  */
-struct Node* bst_find(struct BST* bst, int key)
+Node* bst_find(BST* bst, int key)
 {
     if (bst->count > 0)
     {
-        struct Node* current_node = bst->root;
+        Node* current_node = bst->root;
         while (current_node != NULL)
         {
             if (key == current_node->key)
@@ -152,12 +152,12 @@ struct Node* bst_find(struct BST* bst, int key)
  * --------------------
  *  removes node with given key value from BST if it exists in BST
  *  
- *  bst: (struct BST*) ptr to BST from which to remove specified node
+ *  bst: (BST*) ptr to BST from which to remove specified node
  *  key: (int) key value of node to remove
  *
  *  returns: true if node w/ given key removed from BST, false otherwise
  */
-bool bst_remove(struct BST* bst, int key)
+bool bst_remove(BST* bst, int key)
 {
     return _remove_helper(bst, key, false);
 }
@@ -169,11 +169,11 @@ bool bst_remove(struct BST* bst, int key)
  *  returns value of the root node of given bst
  *  assumes bst non-empty
  *  
- *  bst: (struct BST*) ptr to BST from which to get root node's key value
+ *  bst: (BST*) ptr to BST from which to get root node's key value
  *
  *  returns: integer representing BST root node's key value
  */
-int bst_root_val(struct BST* bst)
+int bst_root_val(BST* bst)
 {
     return bst->root->key;
 }
@@ -184,13 +184,13 @@ int bst_root_val(struct BST* bst)
  * --------------------
  *  returns number of nodes along longest path from root to farthest leaf node
  *  
- *  bst: (struct BST*) ptr to BST
+ *  bst: (BST*) ptr to BST
  *
  *  returns: the BST's max depth (integer)
  */
-int bst_max_depth(struct BST* bst)
+int bst_max_depth(BST* bst)
 {
-    struct Node* root_ptr = bst->root;
+    Node* root_ptr = bst->root;
     return _max_depth_recur(root_ptr);
 }
 
@@ -200,13 +200,13 @@ int bst_max_depth(struct BST* bst)
  * --------------------
  *  returns number of nodes along shortest path from root to farthest leaf node
  *  
- *  bst: (struct BST*) ptr to BST
+ *  bst: (BST*) ptr to BST
  *
  *  returns: the BST's max depth (integer)
  */
-int bst_min_depth(struct BST* bst)
+int bst_min_depth(BST* bst)
 {
-    struct Node* root_ptr = bst->root;
+    Node* root_ptr = bst->root;
     return _min_depth_recur(root_ptr);
 }
 
@@ -216,12 +216,12 @@ int bst_min_depth(struct BST* bst)
  * --------------------
  *  returns level of given node in bst (root is considered level 1)
  *  
- *  bst: (struct BST*) ptr to BST
- *  node: (struct Node*) ptr to Node
+ *  bst: (BST*) ptr to BST
+ *  node: (Node*) ptr to Node
  *
  *  returns: the node's level in the bst (integer), or NULL
  */
-int bst_node_level(struct BST* bst, struct Node* node)
+int bst_node_level(BST* bst, Node* node)
 {
     int level = 1;
     while (node->parent != NULL)
@@ -238,11 +238,11 @@ int bst_node_level(struct BST* bst, struct Node* node)
  * --------------------
  *  deletes all nodes and frees their memory from input bst
  *  
- *  bst: (struct BST*) the bst to clear
+ *  bst: (BST*) the bst to clear
  *
  *  returns: none
  */
-void bst_clear(struct BST* bst)
+void bst_clear(BST* bst)
 {
     while (bst->count > 0)
     {
@@ -262,9 +262,9 @@ void bst_clear(struct BST* bst)
  *
  *  returns: the created node
  */
-struct Node* _create_node(int key)
+Node* _create_node(int key)
 {
-    struct Node* new_node = (struct Node*)malloc(sizeof(struct Node));
+    Node* new_node = (Node*)malloc(sizeof(Node));
     new_node->key = key;
     new_node->left = NULL;
     new_node->right = NULL;
@@ -280,9 +280,9 @@ struct Node* _create_node(int key)
  *
  *  returns: ptr to the created empty BST
  */
-struct BST* _create_bst()
+BST* _create_bst()
 {
-    struct BST* bst = (struct BST*)malloc(sizeof(struct BST));
+    BST* bst = (BST*)malloc(sizeof(BST));
     bst->root = NULL;
     bst->count = 0;
     return bst;
@@ -294,7 +294,7 @@ struct BST* _create_bst()
  * --------------------
  *  helper function, recursively performs bst traversal
  *  
- *  node: (struct Node*) ptr to current node
+ *  node: (Node*) ptr to current node
  *  order: (int) order of traversal:
  *         0 for in-order, 1 for pre-order, 2 for post-order
  *  visited: (int *) ptr to array of ints representing traversal
@@ -302,7 +302,7 @@ struct BST* _create_bst()
  *
  *  returns: none
  */
-void _trav_recur(struct Node* node, int order, int* visited, 
+void _trav_recur(Node* node, int order, int* visited, 
     int* visited_idx)
 {
     if (node == NULL)
@@ -339,18 +339,18 @@ void _trav_recur(struct Node* node, int order, int* visited,
  * --------------------
  *  helper function to identify the left-most child of the given BST node
  *  
- *  node: (struct Node*) node from which to initiate search
+ *  node: (Node*) node from which to initiate search
  *
  *  returns: pointer to input node's left-most child (if input node has
  *           no left children, returns pointer to input node itself)
  */
-struct Node* _left_child(struct Node* node)
+Node* _left_child(Node* node)
 {
     if (node->left == NULL)
     {
         return node;
     }
-    struct Node* next_node = node->left;
+    Node* next_node = node->left;
     while (next_node != NULL)
     {
         node = next_node;
@@ -365,22 +365,22 @@ struct Node* _left_child(struct Node* node)
  * --------------------
  *  helper function to remove specified node from BST 
  *  
- *  bst: (struct BST*) ptr to BST from which to remove specified node
+ *  bst: (BST*) ptr to BST from which to remove specified node
  *  key: (int) key value of node to remove
  *  recur: (bool) if true, function assumes it is in a recursive call
  *      to 'delete' in-order successor, and will NOT decrement count
  *
  *  returns: true if node w/ given key removed from BST, false otherwise
  */
-bool _remove_helper(struct BST* bst, int key, bool recur)
+bool _remove_helper(BST* bst, int key, bool recur)
 {
     /* initialize pointers to current node and its parent */
-    struct Node* current = bst_find(bst, key);
+    Node* current = bst_find(bst, key);
     if (current == NULL)
     {
         return false;
     }
-    struct Node* parent = current->parent;
+    Node* parent = current->parent;
     /* if node being removed has 0 children: set its parent to point to NULL
      * instead of it, and then free the node's memory */
     if (current->left == NULL && current->right == NULL)
@@ -411,7 +411,7 @@ bool _remove_helper(struct BST* bst, int key, bool recur)
     else if (current->left && !current->right ||
         current->right && !current->left)
     {
-        struct Node* child = (current->left) ? current->left : current->right;
+        Node* child = (current->left) ? current->left : current->right;
         if (current != bst->root)
         {
             if (current == parent->left)
@@ -438,7 +438,7 @@ bool _remove_helper(struct BST* bst, int key, bool recur)
     /* if the node being removed has 2 children, use in-order successor */
     else
     {
-        struct Node* successor = _left_child(current->right);
+        Node* successor = _left_child(current->right);
         int suc_val = successor->key;
         _remove_helper(bst, successor->key, true);  /* does the free */
         if (!recur)
@@ -457,11 +457,11 @@ bool _remove_helper(struct BST* bst, int key, bool recur)
  *  recursive helper function for bst_max_depth
  *  finds max distance from given node to farthest leaf node
  *  
- *  node: (struct Node*) ptr to node
+ *  node: (Node*) ptr to node
  *
  *  returns: the max depth (integer)
  */
-int _max_depth_recur(struct Node* node)
+int _max_depth_recur(Node* node)
 {
     if (node == NULL)
     {
@@ -488,11 +488,11 @@ int _max_depth_recur(struct Node* node)
  *  recursive helper function for bst_min_depth
  *  finds min distance from given node to farthest leaf node
  *  
- *  node: (struct Node*) ptr to node
+ *  node: (Node*) ptr to node
  *
  *  returns: the min depth (integer)
  */
-int _min_depth_recur(struct Node* node)
+int _min_depth_recur(Node* node)
 {
     /* return 0 if node is only node in bst */
     if (node == NULL)

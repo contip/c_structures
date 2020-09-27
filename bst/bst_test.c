@@ -12,7 +12,7 @@ void add_tests()
      */
     int test_1[7] = { 15, 0, -5, 5, 20, 25, 17 };
     int test_1_size = 7;
-    struct BST* test_1_bst = bst_init(test_1, test_1_size);
+    BST* test_1_bst = bst_init(test_1, test_1_size);
     assert(test_1[0] == bst_root_val(test_1_bst));
     assert(test_1[1] == test_1_bst->root->left->key);
     assert(test_1[4] == test_1_bst->root->right->key);
@@ -38,7 +38,7 @@ void traversal_tests()
      */
     int test_trav_1[10] = { 7 , 5 , 1 , 8 , 3 , 6 , 0 , 9 , 4 , 2 };
     int test_trav_1_size = 10;
-    struct BST* test_trav_1_bst = bst_init(test_trav_1, test_trav_1_size);
+    BST* test_trav_1_bst = bst_init(test_trav_1, test_trav_1_size);
 
     /* test 1: in order traversal */
     int in_order_expected[10] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -76,7 +76,7 @@ void traversal_tests()
      */
     int test_trav_2[7] = { 15, 0, -5, 5, 20, 25, 17 };
     int test_trav_2_size = 7;
-    struct BST* test_trav_2_bst = bst_init(test_trav_2, test_trav_2_size);
+    BST* test_trav_2_bst = bst_init(test_trav_2, test_trav_2_size);
 
     /* test 4: in-order traversal */
     int in_order_expected_2[7] = { -5, 0, 5, 15, 17, 20, 25 };
@@ -122,7 +122,7 @@ void remove_tests()
      */
     int test_rem[7] = { 15, 0, -5, 5, 20, 25, 17 };
     int test_rem_size = 7;
-    struct BST* test_rem_bst = bst_init(test_rem, test_rem_size);
+    BST* test_rem_bst = bst_init(test_rem, test_rem_size);
 
     /* test 1: remove root */
        /* Expected Tree:
@@ -202,7 +202,7 @@ void remove_tests()
         */
     int test_rem_2[8] = { 15, 0, -5, 5, 20, 25, 17, 19 };
     int test_rem_2_size = 8;
-    struct BST* test_rem_2_bst = bst_init(test_rem_2, test_rem_2_size);
+    BST* test_rem_2_bst = bst_init(test_rem_2, test_rem_2_size);
 
     /* test 6: remove root */
        /* Expected Tree:
@@ -321,7 +321,7 @@ void max_depth_tests()
      */
     int test_max_depth[5] = { 1, 3, 4, 69, 10 };
     int i, test_max_depth_size = 5;
-    struct BST* test_max_depth_bst = bst_init(test_max_depth,
+    BST* test_max_depth_bst = bst_init(test_max_depth,
         test_max_depth_size);
     assert(bst_max_depth(test_max_depth_bst) == 5);
 
@@ -339,7 +339,7 @@ void max_depth_tests()
      */
     int test_max_depth_2[5] = { 3, 9, 20, 15, 7 };
     int test_max_depth_2_size = 5;
-    struct BST* test_max_depth_2_bst = bst_init(test_max_depth_2,
+    BST* test_max_depth_2_bst = bst_init(test_max_depth_2,
         test_max_depth_2_size);
     assert(bst_max_depth(test_max_depth_2_bst) == 4);
 
@@ -352,7 +352,7 @@ void max_depth_tests()
      */
     int test_max_depth_3[5] = { 3, 5, 1, 12, 4 };
     int test_max_depth_3_size = 5;
-    struct BST* test_max_depth_3_bst = bst_init(test_max_depth_3,
+    BST* test_max_depth_3_bst = bst_init(test_max_depth_3,
         test_max_depth_3_size);
     assert(bst_max_depth(test_max_depth_3_bst) == 3);
 
@@ -379,7 +379,7 @@ void min_depth_tests()
      */
     int test_min_depth[5] = { 1, 3, 4, 69, 10 };
     int i, test_min_depth_size = 5;
-    struct BST* test_min_depth_bst = bst_init(test_min_depth,
+    BST* test_min_depth_bst = bst_init(test_min_depth,
         test_min_depth_size);
     assert(bst_min_depth(test_min_depth_bst) == 5);
 
@@ -397,7 +397,7 @@ void min_depth_tests()
      */
     int test_min_depth_2[5] = { 3, 9, 20, 15, 7 };
     int test_min_depth_2_size = 5;
-    struct BST* test_min_depth_2_bst = bst_init(test_min_depth_2,
+    BST* test_min_depth_2_bst = bst_init(test_min_depth_2,
         test_min_depth_2_size);
     assert(bst_min_depth(test_min_depth_2_bst) == 3);
 
@@ -410,7 +410,7 @@ void min_depth_tests()
      */
     int test_min_depth_3[5] = { 3, 5, 1, 12, 4 };
     int test_min_depth_3_size = 5;
-    struct BST* test_min_depth_3_bst = bst_init(test_min_depth_3,
+    BST* test_min_depth_3_bst = bst_init(test_min_depth_3,
         test_min_depth_3_size);
     assert(bst_min_depth(test_min_depth_3_bst) == 2);
 
@@ -438,7 +438,7 @@ void node_level_tests()
 
     int level_array_1[5] = { 3, 9, 20, 15, 7 };
     int level_size_1 = 5;
-    struct BST* level_bst_1 = bst_init(level_array_1,
+    BST* level_bst_1 = bst_init(level_array_1,
         level_size_1);
     assert(bst_node_level(level_bst_1, level_bst_1->root) == 1);
     assert(bst_node_level(level_bst_1, level_bst_1->root->right) == 2);
@@ -463,7 +463,7 @@ void clear_tests()
      */
     int clear_array_1[5] = { 3, 5, 1, 12, 4 };
     int clear_size_1 = 5;
-    struct BST* clear_bst_1 = bst_init(clear_array_1,
+    BST* clear_bst_1 = bst_init(clear_array_1,
         clear_size_1);
     assert(clear_bst_1->count == 5);
     bst_clear(clear_bst_1);
