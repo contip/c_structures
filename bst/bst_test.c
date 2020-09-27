@@ -11,8 +11,14 @@ void add_tests()
      *                  -5   5  17    25
      */
     int test_1[7] = { 15, 0, -5, 5, 20, 25, 17 };
-    int test_1_size = 7;
-    BST* test_1_bst = bst_init(test_1, test_1_size);
+    int i, test_1_size = 7;
+    BST* test_1_bst = bst_init(NULL, 0);
+    for (i = 0; i < test_1_size; i++)
+    {
+        bst_add(test_1_bst, test_1[i]);
+
+    }
+
     assert(test_1[0] == bst_root_val(test_1_bst));
     assert(test_1[1] == test_1_bst->root->left->key);
     assert(test_1[4] == test_1_bst->root->right->key);

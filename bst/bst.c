@@ -198,7 +198,7 @@ int bst_max_depth(BST* bst)
 /*
  * Function:  bst_min_depth
  * --------------------
- *  returns number of nodes along shortest path from root to farthest leaf node
+ *  returns number of nodes along shortest path from root to closest leaf node
  *  
  *  bst: (BST*) ptr to BST
  *
