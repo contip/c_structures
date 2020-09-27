@@ -6,7 +6,7 @@
 
 void init_tests()
 {
-    struct LL* init_1 = ll_init();
+    LL* init_1 = ll_init();
     assert(init_1->count == 0);
     assert(init_1->head == NULL);
     assert(init_1->tail == NULL);
@@ -16,7 +16,7 @@ void init_tests()
 void append_tests()
 {
     /* test 1 - add integers */
-    struct LL* append_1 = ll_init();
+    LL* append_1 = ll_init();
     assert(append_1->count == 0);
     int i, int_vals[5] = { 69, -1, 20, 15, 0 };
     ll_append(append_1, &int_vals[0], INT);
@@ -35,7 +35,7 @@ void append_tests()
     assert(append_1->count == 5);
 
     /* test 2 - add floating point numbers */
-    struct LL* append_2 = ll_init();
+    LL* append_2 = ll_init();
     double double_vals[5] = { 1.69, -2.22, 3.4, 300.1, 0.3432 };
     for (i = 0; i < 5; i ++)
     {
@@ -49,7 +49,7 @@ void append_tests()
     assert(append_2->count == 5);
 
     /* test 3 - add individual characters */
-    struct LL* append_3 = ll_init();
+    LL* append_3 = ll_init();
     char char_vals[5] = "Abba!";
     for (i = 0; i < 5; i ++)
     {
@@ -62,7 +62,7 @@ void append_tests()
     assert(*(char*)append_3->head->next->data == 'b');
 
     /* test 4 - add strings */
-    struct LL* append_4 = ll_init();
+    LL* append_4 = ll_init();
     char string_vals[5][20] = { "dilaudid", "piano", "YAa", "marsu", "DzZy" };
     for (i = 0; i < 5; i ++)
     {
@@ -78,7 +78,7 @@ void append_tests()
                 string_vals[4]) == 0);
 
     /* test 5 - add mixed data types */
-    struct LL* append_5 = ll_init();
+    LL* append_5 = ll_init();
     int val_1 = 69;
     double val_2 = 69.69;
     char val_3 = 'z';
@@ -113,7 +113,7 @@ void append_tests()
 void prepend_tests()
 {
     /* test 1 - add integers */
-    struct LL* prepend_1 = ll_init();
+    LL* prepend_1 = ll_init();
     assert(prepend_1->count == 0);
     int i, int_vals[5] = { 69, -1, 20, 15, 0 };
     ll_prepend(prepend_1, &int_vals[0], INT);
@@ -132,7 +132,7 @@ void prepend_tests()
     assert(prepend_1->count == 5);
 
     /* test 2 - add floating point numbers */
-    struct LL* prepend_2 = ll_init();
+    LL* prepend_2 = ll_init();
     double double_vals[5] = { 1.69, -2.22, 3.4, 300.1, 0.3432 };
     for (i = 0; i < 5; i ++)
     {
@@ -146,7 +146,7 @@ void prepend_tests()
     assert(prepend_2->count == 5);
 
     /* test 3 - add individual characters */
-    struct LL* prepend_3 = ll_init();
+    LL* prepend_3 = ll_init();
     char char_vals[5] = "Abba!";
     for (i = 0; i < 5; i ++)
     {
@@ -159,7 +159,7 @@ void prepend_tests()
     assert(*(char*)prepend_3->head->next->data == 'a');
 
     /* test 4 - add strings */
-    struct LL* prepend_4 = ll_init();
+    LL* prepend_4 = ll_init();
     char string_vals[5][20] = { "dilaudid", "piano", "YAa", "marsu", "DzZy" };
     for (i = 0; i < 5; i ++)
     {
@@ -175,7 +175,7 @@ void prepend_tests()
                 string_vals[0]) == 0);
 
     /* test 5 - add mixed data types */
-    struct LL* prepend_5 = ll_init();
+    LL* prepend_5 = ll_init();
     int val_1 = 69;
     double val_2 = 69.69;
     char val_3 = 'z';
@@ -211,7 +211,7 @@ void prepend_tests()
 void pop_end_tests()
 {
     /* test 1 - integers */
-    struct LL* pop_end_1 = ll_init();
+    LL* pop_end_1 = ll_init();
     int i, int_vals[5] = { 69, -1, 20, 15, 0 };
     for (i = 0; i < 5; i++)
     {
@@ -227,7 +227,7 @@ void pop_end_tests()
     assert(ll_pop_end(pop_end_1) == NULL);
 
     /* test 2 - doubles */
-    struct LL* pop_end_2 = ll_init();
+    LL* pop_end_2 = ll_init();
     double double_vals[5] = { 1.69, -2.22, 3.4, 300.1, 0.3432 };
     for (i = 0; i < 5; i ++)
     {
@@ -243,7 +243,7 @@ void pop_end_tests()
     assert(ll_pop_end(pop_end_2) == NULL);
 
     /* test 3 - chars */
-    struct LL* pop_end_3 = ll_init();
+    LL* pop_end_3 = ll_init();
     char char_vals[5] = "Abba!";
     for (i = 0; i < 5; i ++)
     {
@@ -259,7 +259,7 @@ void pop_end_tests()
     assert(ll_pop_end(pop_end_3) == NULL);
 
     /* test 4 - strings */
-    struct LL* pop_end_4 = ll_init();
+    LL* pop_end_4 = ll_init();
     char string_vals[5][20] = { "dilaudid", "piano", "YAa", "marsu", "DzZy" };
     for (i = 0; i < 5; i ++)
     {
@@ -275,7 +275,7 @@ void pop_end_tests()
     assert(ll_pop_end(pop_end_4) == NULL);
 
     /* test 5 - mixed data types */
-    struct LL* pop_end_5 = ll_init();
+    LL* pop_end_5 = ll_init();
     int val_1 = 69;
     double val_2 = 69.69;
     char val_3 = 'z';
@@ -316,7 +316,7 @@ void pop_end_tests()
 void pop_front_tests()
 {
     /* test 1 - integers */
-    struct LL* pop_front_1 = ll_init();
+    LL* pop_front_1 = ll_init();
     int i, int_vals[5] = { 69, -1, 20, 15, 0 };
     for (i = 0; i < 5; i++)
     {
@@ -333,7 +333,7 @@ void pop_front_tests()
     assert(ll_pop_front(pop_front_1) == NULL);
 
     /* test 2 - doubles */
-    struct LL* pop_front_2 = ll_init();
+    LL* pop_front_2 = ll_init();
     double double_vals[5] = { 1.69, -2.22, 3.4, 300.1, 0.3432 };
     for (i = 0; i < 5; i ++)
     {
@@ -349,7 +349,7 @@ void pop_front_tests()
     assert(ll_pop_front(pop_front_2) == NULL);
 
     /* test 3 - chars */
-    struct LL* pop_front_3 = ll_init();
+    LL* pop_front_3 = ll_init();
     char char_vals[5] = "Abba!";
     for (i = 0; i < 5; i ++)
     {
@@ -365,7 +365,7 @@ void pop_front_tests()
     assert(ll_pop_front(pop_front_3) == NULL);
 
     /* test 4 - strings */
-    struct LL* pop_front_4 = ll_init();
+    LL* pop_front_4 = ll_init();
     char string_vals[5][20] = { "dilaudid", "piano", "YAa", "marsu", "DzZy" };
     for (i = 0; i < 5; i ++)
     {
@@ -381,7 +381,7 @@ void pop_front_tests()
     assert(ll_pop_front(pop_front_4) == NULL);
 
     /* test 5 - mixed data types */
-    struct LL* pop_front_5 = ll_init();
+    LL* pop_front_5 = ll_init();
     int val_1 = 69;
     double val_2 = 69.69;
     char val_3 = 'z';
@@ -422,7 +422,7 @@ void pop_front_tests()
 void clear_tests()
 {
     /* test 1 */
-    struct LL* clear_1 = ll_init();
+    LL* clear_1 = ll_init();
     int i, int_vals[5] = { 69, -1, 20, 15, 0 };
     for (i = 0; i < 5; i++)
     {
@@ -435,14 +435,14 @@ void clear_tests()
     assert(clear_1->tail == NULL);
 
     /* test 2 - clearing empty LL should not cause errors */
-    struct LL* clear_2 = ll_init();
+    LL* clear_2 = ll_init();
     ll_clear(clear_2, true);
     assert(clear_2->count == 0);
     assert(clear_2->head == NULL);
     assert(clear_2->tail == NULL);
 
     /* test 3 - clearing mixed LL with mixed datatypes */
-    struct LL* clear_3 = ll_init();
+    LL* clear_3 = ll_init();
     int val_1 = 69;
     double val_2 = 69.69;
     char val_3 = 'z';
@@ -468,7 +468,7 @@ void clear_tests()
 void contains_tests()
 {
     /* test 1 */
-    struct LL* contains_1 = ll_init();
+    LL* contains_1 = ll_init();
     int i, int_vals[5] = { 69, -1, 20, 15, 0 };
     for (i = 0; i < 5; i++)
     {
@@ -483,7 +483,7 @@ void contains_tests()
     }
 
     /* test 2 searching empty LL should return false */
-    struct LL* contains_2 = ll_init();
+    LL* contains_2 = ll_init();
     for (i = 0; i < 5; i++)
     {
         assert(ll_contains(contains_2, &int_vals[i], INT) == false);
@@ -491,7 +491,7 @@ void contains_tests()
     }
 
     /* test 3 searching for a value that has been removed */
-    struct LL* contains_3 = ll_init();
+    LL* contains_3 = ll_init();
     for (i = 0; i < 5; i++)
     {
         ll_append(contains_3, &int_vals[i], INT);
@@ -501,7 +501,7 @@ void contains_tests()
     assert(ll_contains(contains_3, &int_vals[0], INT) == false);
     
     /* test 4 mixed values */
-    struct LL* contains_4 = ll_init();
+    LL* contains_4 = ll_init();
     int val_1 = 69;
     double val_2 = 69.69;
     char val_3 = 'z';
@@ -540,7 +540,7 @@ void contains_tests()
 void remove_first_tests()
 {
     /* test 1 - simple int removals until empty */
-    struct LL* remove_first_1 = ll_init();
+    LL* remove_first_1 = ll_init();
     int i, int_vals[5] = { 69, -1, 20, 15, 0 };
     int bad_values[5] = { 68, -2, 21, 14, 1 };
     for (i = 4; i > -1; i--)
@@ -577,7 +577,7 @@ void remove_first_tests()
     assert(ll_remove_first(remove_first_1, &int_vals[0], INT) == false);
 
     /* test 2 - duplicate values */
-    struct LL* remove_first_2 = ll_init();
+    LL* remove_first_2 = ll_init();
     double double_vals[5] = { 69.69, 1.2, 69.69, 69.69, 1.2 };
     double bad_doubles[5] = { 12.3, -34.2, 33.4, 66.4,  345.4 };
     for (i = 4; i > -1; i--)
@@ -604,7 +604,7 @@ void remove_first_tests()
     assert(remove_first_2->tail == NULL);
 
     /* test 3 - mixed datatypes */
-    struct LL* remove_first_3 = ll_init();
+    LL* remove_first_3 = ll_init();
     char char_vals[5] = "Abba!";
     char string_vals[5][20] = { "dilaudid", "piano", "YAa", "marsu", "DzZy" };
     for (i = 0; i < 5; i++)
@@ -654,7 +654,7 @@ void remove_index_tests()
     char string_vals[5][20] = { "dilaudid", "piano", "YAa", "marsu", "DzZy" };
 
     /* test 1 - simple int removals */
-    struct LL* remove_index_1 = ll_init();
+    LL* remove_index_1 = ll_init();
     for (i = 0; i < 5; i++)
     {
         ll_append(remove_index_1, &int_vals[i], INT);
@@ -675,7 +675,7 @@ void remove_index_tests()
     assert(remove_index_1->count == 0);
 
     /* test 2 - simple int removals */
-    struct LL* remove_index_2 = ll_init();
+    LL* remove_index_2 = ll_init();
     for (i = 0; i < 5; i++)
     {
         ll_append(remove_index_2, &int_vals[i], INT);
@@ -713,7 +713,7 @@ void splice_tests()
     char string_vals[5][20] = { "dilaudid", "piano", "YAa", "marsu", "DzZy" };
 
     /* test 1 */
-    struct LL* splice_1 = ll_init();
+    LL* splice_1 = ll_init();
     for (i = 0; i < 5; i++)
     {
         ll_append(splice_1, &char_vals[i], CHAR);
@@ -734,7 +734,7 @@ void splice_tests()
     assert(ll_splice(splice_1, &string_vals[0], STRING, 8) == false);
     
     /* test 2 */
-    struct LL* splice_2 = ll_init();
+    LL* splice_2 = ll_init();
     assert(ll_splice(splice_2, &string_vals[0], STRING, 0) == true);
     /* { "dilaudid" } */
     assert(ll_splice(splice_2, &double_vals[0], DOUBLE, 0) == true);
@@ -766,7 +766,7 @@ void get_tests()
     char char_vals[5] = "Abba!";
     char string_vals[5][20] = { "dilaudid", "piano", "YAa", "marsu", "DzZy" };
 
-    struct LL* get_1 = ll_init();
+    LL* get_1 = ll_init();
     for (i = 0; i < 5; i++)
     {
         ll_append(get_1, &int_vals[i], INT);

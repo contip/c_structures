@@ -12,7 +12,7 @@ struct TestStruct
 
 void obj_tests()
 {
-    struct LL* test_1 = ll_init();
+    LL* test_1 = ll_init();
     int int_val = 69;
 
     struct TestStruct* obj = malloc(sizeof(struct TestStruct));

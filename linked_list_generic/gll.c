@@ -4,9 +4,9 @@
 #include "gll.h"
 
 /* private helper functions */
-void _remove_node(struct LL* list, struct Node* node);
-void _print_node(struct Node* node);
-struct Node* _create_node(void* data, enum ListType type);
+void _remove_node(LL* list, Node* node);
+void _print_node(Node* node);
+Node* _create_node(void* data, enum ListType type);
 
 
 /*
@@ -16,9 +16,9 @@ struct Node* _create_node(void* data, enum ListType type);
  *
  *  returns: ptr to linked list structure with 0 nodes
  */
-struct LL* ll_init()
+LL* ll_init()
 {
-    struct LL* list = (struct LL*)malloc(sizeof(struct LL));
+    LL* list = (LL*)malloc(sizeof(LL));
     list->head = NULL;
     list->tail = NULL;
     list->count = 0;
@@ -31,13 +31,13 @@ struct LL* ll_init()
  * --------------------
  *  prints the input linked list to the console
  *
- *  list: (struct LL*) the linked list
+ *  list: (LL*) the linked list
  *
  *  returns: none (prints to screen)
  */
-void ll_print(struct LL* list)
+void ll_print(LL* list)
 {
-    struct Node* current = list->head;
+    Node* current = list->head;
     while (current != NULL)
     {
         _print_node(current);
@@ -52,15 +52,15 @@ void ll_print(struct LL* list)
  * --------------------
  *  creates node using input data and appends it to end of linked list 
  *
- *  list: (struct LL*) linked list to which new node will be appended 
+ *  list: (LL*) linked list to which new node will be appended 
  *  data: (void*) void ptr representing the value of the node to be added
  *  type: (enum ListType) data type; one of INT, DOUBLE, CHAR, STRING, or DATA
  *
  *  returns: true if node successfully appended, false otherwise 
  */
-bool ll_append(struct LL* list, void* data, enum ListType type)
+bool ll_append(LL* list, void* data, enum ListType type)
 {
-    struct Node* to_add = _create_node(data, type);
+    Node* to_add = _create_node(data, type);
     to_add->prev = list->tail;
     if (list->tail)
     {
@@ -78,15 +78,15 @@ bool ll_append(struct LL* list, void* data, enum ListType type)
  * --------------------
  *  creates node using input data and prepends it to front of linked list 
  *
- *  list: (struct LL*) linked list to which new node will be added 
+ *  list: (LL*) linked list to which new node will be added 
  *  data: (void*) void ptr representing the value of the node to be added
  *  type: (enum ListType) data type; one of INT, DOUBLE, CHAR, STRING, or DATA
  *
  *  returns: true if node successfully prepended, false otherwise 
  */
-bool ll_prepend(struct LL* list, void* data, enum ListType type)
+bool ll_prepend(LL* list, void* data, enum ListType type)
 {
-    struct Node* to_add = _create_node(data, type);
+    Node* to_add = _create_node(data, type);
     to_add->next = list->head;
     if (list->head)
     {
@@ -104,14 +104,14 @@ bool ll_prepend(struct LL* list, void* data, enum ListType type)
  * --------------------
  *  removes tail node from LL and returns ptr to its data value
  *
- *  list: (struct LL*) linked list from which to pop
+ *  list: (LL*) linked list from which to pop
  *
  *  returns: void ptr to popped node's data value, or NULL if LL empty 
  */
-void* ll_pop_end(struct LL* list)
+void* ll_pop_end(LL* list)
 {
     if (list->count == 0) {return NULL;}
-    struct Node* to_remove = list->tail;
+    Node* to_remove = list->tail;
     void* node_data = to_remove->data;
     if (list->count == 1)
     {
@@ -135,14 +135,14 @@ void* ll_pop_end(struct LL* list)
  * --------------------
  *  removes head node from LL and returns ptr its data value
  *
- *  list: (struct LL*) linked list from which to pop
+ *  list: (LL*) linked list from which to pop
  *
  *  returns: void ptr to popped node's data value, or NULL if LL empty 
  */
-void* ll_pop_front(struct LL* list)
+void* ll_pop_front(LL* list)
 {
     if (list->count == 0) {return NULL;}
-    struct Node* to_remove = list->head;
+    Node* to_remove = list->head;
     void* node_data = to_remove->data;
     if (list->count == 1)
     {
@@ -167,19 +167,19 @@ void* ll_pop_front(struct LL* list)
  *  clears input LL of all its Nodes
  *  ***does not free the LL structure itself***
  *
- *  list: (struct LL*) the linked list to clear
+ *  list: (LL*) the linked list to clear
  *  deep: (bool) determines whether to perform a shallow deep clear
  *          false - free all nodes in input LL
  *          true - free all nodes along with the data of each node
  *
  *  returns: none
  */
-void ll_clear(struct LL* list, bool deep)
+void ll_clear(LL* list, bool deep)
 {
-    struct Node* current = list->head;
+    Node* current = list->head;
     while (current != NULL)
     {
-        struct Node* prev = current;
+        Node* prev = current;
         if (deep)
         {
             if (current->type != DATA)
@@ -203,15 +203,15 @@ void ll_clear(struct LL* list, bool deep)
  * --------------------
  *  determines whether node with given value exists in linked list 
  *
- *  list: (struct LL*) linked list to search
+ *  list: (LL*) linked list to search
  *  data: (void*) void ptr to data to be searched for
  *  type: (enum ListType) data type; one of INT, DOUBLE, CHAR, STRING, or DATA
  *
  *  returns: true if node matching value found, false otherwise
  */
-bool ll_contains(struct LL* list, void* data, enum ListType type)
+bool ll_contains(LL* list, void* data, enum ListType type)
 {
-    struct Node* current = list->head;
+    Node* current = list->head;
     while (current != NULL)
     {
         switch (type)
@@ -277,15 +277,15 @@ bool ll_contains(struct LL* list, void* data, enum ListType type)
  * --------------------
  *  removes first node from linked list with value matching input value
  *
- *  list: (struct LL*) the linked list from which to delete
+ *  list: (LL*) the linked list from which to delete
  *  data: (void*) void ptr to data to search nodes for
  *  type: (enum ListType) data type; one of INT, DOUBLE, CHAR, STRING, or DATA
  *
  *  returns: true if node successfully removed, false otherwise
  */
-bool ll_remove_first(struct LL* list, void* data, enum ListType type)
+bool ll_remove_first(LL* list, void* data, enum ListType type)
 {
-    struct Node* current = list->head;
+    Node* current = list->head;
     while (current != NULL)
     {
         switch (type)
@@ -354,12 +354,12 @@ bool ll_remove_first(struct LL* list, void* data, enum ListType type)
  * --------------------
  *  removes node associated with input index, if it exists
  *
- *  list: (struct LL*) the linked list from which to delete
+ *  list: (LL*) the linked list from which to delete
  *  index: (int) index of the node to be deleted
  *
  *  returns: true if node successfully removed, false otherwise
  */
-bool ll_remove_index(struct LL* list, int index)
+bool ll_remove_index(LL* list, int index)
 {
     if (index >= list->count)
     {
@@ -376,7 +376,7 @@ bool ll_remove_index(struct LL* list, int index)
         return true;
     }
     int counter = 0;
-    struct Node* current_node = list->head;
+    Node* current_node = list->head;
     while (counter != index)
     {
         counter++;
@@ -392,14 +392,14 @@ bool ll_remove_index(struct LL* list, int index)
  * --------------------
  *  creates node with specified value and inserts at specified position in LL
  *
- *  list: (struct LL*) linked list to which new node will be added 
+ *  list: (LL*) linked list to which new node will be added 
  *  data: (void*) void ptr to the value of the node to be added
  *  type: (enum ListType) data type; one of INT, DOUBLE, CHAR, STRING, or DATA
  *  index: (int) index at which to insert the new node
  *
  *  returns: true if node successfully inserted, false otherwise
  */
-bool ll_splice(struct LL* list, void* data, enum ListType type, int index)
+bool ll_splice(LL* list, void* data, enum ListType type, int index)
 {
     if (index >= list->count)
     {
@@ -410,9 +410,9 @@ bool ll_splice(struct LL* list, void* data, enum ListType type, int index)
     {
         return ll_prepend(list, data, type);
     }
-    struct Node* to_add = _create_node(data, type);
+    Node* to_add = _create_node(data, type);
     int counter = 0;
-    struct Node* current_node = list->head;
+    Node* current_node = list->head;
     while (counter != index)
     {
         counter++;
@@ -433,12 +433,12 @@ bool ll_splice(struct LL* list, void* data, enum ListType type, int index)
  *  returns ptr to data contained in node specified by input index
  *  does not delete the node or its data 
  *
- *  list: (struct LL*) the linked list
+ *  list: (LL*) the linked list
  *  index: (int) index of the node whose data will be retrieved 
  *
  *  returns: void ptr to node's data, or NULL if invalid index given
  */
-void* ll_get(struct LL* list, int index)
+void* ll_get(LL* list, int index)
 {
     if (index == 0)
     {
@@ -453,7 +453,7 @@ void* ll_get(struct LL* list, int index)
         return list->tail->data;
     }
     int counter = 0;
-    struct Node* current_node = list->head;
+    Node* current_node = list->head;
     while (counter != index)
     {
         counter++;
@@ -470,12 +470,12 @@ void* ll_get(struct LL* list, int index)
  *  removes specified node from specified linked list, freeing memory 
  *  assumes node exists in LL, and that LL is not empty
  *
- *  list: (struct LL*) linked list from which to delete
- *  node: (struct Node*) ptr to node being removed 
+ *  list: (LL*) linked list from which to delete
+ *  node: (Node*) ptr to node being removed 
  *
  *  returns: none 
  */
-void _remove_node(struct LL* list, struct Node* node)
+void _remove_node(LL* list, Node* node)
 {
     if (node->type != DATA)
     {
@@ -503,11 +503,11 @@ void _remove_node(struct LL* list, struct Node* node)
  * --------------------
  *  prints the data stored in input node to the screen
  *
- *  node: (struct Node*) ptr to node whose value will be printed
+ *  node: (Node*) ptr to node whose value will be printed
  *
  *  returns: none 
  */
-void _print_node(struct Node* node)
+void _print_node(Node* node)
 {
     switch (node->type)
     {
@@ -543,10 +543,10 @@ void _print_node(struct Node* node)
  *
  *  returns: ptr to the created Node
  */
-struct Node* _create_node(void* data, enum ListType type)
+Node* _create_node(void* data, enum ListType type)
 {
     int data_size;
-    struct Node* to_add = (struct Node*)malloc(sizeof(struct Node));
+    Node* to_add = (Node*)malloc(sizeof(Node));
     to_add->type = type;
     to_add->next = NULL;
     to_add->prev = NULL;
